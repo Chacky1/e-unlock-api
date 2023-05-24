@@ -37,3 +37,4 @@ lerna-debug.log*
 # misc
 /docker/e-unlock-dev/mysql
 .env
+/prisma/migrations
