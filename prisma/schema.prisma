@@ -9,3 +9,44 @@ datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
 }
+
+model Course {
+  id          Int       @id @default(autoincrement())
+  name        String
+  description String?
+  duration    Int
+  price       Int
+  active      Boolean   @default(false)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  publishedAt DateTime?
+  sections    Section[]
+}
+
+model Section {
+  id          Int       @id @default(autoincrement())
+  name        String
+  description String?
+  active      Boolean   @default(false)
+  courseOrder Int
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  publishedAt DateTime?
+  course      Course    @relation(fields: [courseId], references: [id])
+  courseId    Int
+  lessons     Lesson[]
+}
+
+model Lesson {
+  id           Int       @id @default(autoincrement())
+  name         String
+  textContent  String?
+  active       Boolean   @default(false)
+  sectionOrder Int
+  videoUrl     String?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  publishedAt  DateTime?
+  section      Section   @relation(fields: [sectionId], references: [id])
+  sectionId    Int
+}
