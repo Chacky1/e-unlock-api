@@ -6,7 +6,16 @@ export const createFakeCourseDto = (
 ): CreateCourseDto => ({
   name: course.name ?? faker.lorem.word(),
   description: course.description ?? faker.lorem.paragraph(),
-  price: course.price ?? faker.number.int(),
-  duration: course.duration ?? faker.number.int(),
-  videoUrl: course.videoUrl ?? faker.internet.url(),
+  price:
+    course.price ??
+    faker.number.int({
+      min: 0,
+      max: 100000,
+    }),
+  duration:
+    course.duration ??
+    faker.number.int({
+      min: 0,
+      max: 1000,
+    }),
 });
