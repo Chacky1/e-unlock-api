@@ -38,3 +38,4 @@ lerna-debug.log*
 /docker/e-unlock-dev/mysql
 .env
 /prisma/migrations
+/tests/coverage
