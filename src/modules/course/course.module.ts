@@ -3,9 +3,10 @@ import { CourseRepository } from './providers/repositories/course.repository';
 import { SectionRepository } from './providers/repositories/section.repository';
 import { LessonRepository } from './providers/repositories/lesson.repository';
 import { CourseService } from './providers/services/course.service';
+import { DatabaseModule } from '../config/database/database.module';
 
 @Module({
-  imports: [],
+  imports: [DatabaseModule],
   controllers: [],
   providers: [
     CourseRepository,
