@@ -7,33 +7,33 @@ export class CreateLessonDto {
     description: 'The name of the lesson',
     example: 'Lesson name',
   })
-  readonly name: string;
+  public name: string;
 
   @IsString()
   @ApiProperty({
     description: 'The description of the lesson',
     example: 'Lesson description',
   })
-  readonly textContent: string;
+  public textContent: string;
 
   @IsNumber()
   @ApiProperty({
     description: 'The section id of the lesson',
     example: 0,
   })
-  sectionId: number;
+  public sectionId: number;
 
   @IsNumber()
   @ApiProperty({
     description: 'The order of the lesson',
     example: 1,
   })
-  sectionOrder: number;
+  public sectionOrder: number;
 
   @IsString()
   @ApiProperty({
     description: 'The video file of the lesson',
     example: 'Lesson video file',
   })
-  active: boolean;
+  public active: boolean;
 }
