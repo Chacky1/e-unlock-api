@@ -29,4 +29,11 @@ export class CreateCourseDto {
     example: 0,
   })
   public duration: number;
+
+  @IsString()
+  @ApiProperty({
+    description: 'The video url of the course',
+    example: 'Course video url',
+  })
+  public videoUrl: string;
 }
