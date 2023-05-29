@@ -6,10 +6,11 @@ import { CourseService } from './providers/services/course.service';
 import { DatabaseModule } from '../config/database/database.module';
 import { SectionService } from './providers/services/section.service';
 import { LessonService } from './providers/services/lesson.service';
+import { CourseController } from './controllers/course.controller';
 
 @Module({
   imports: [DatabaseModule],
-  controllers: [],
+  controllers: [CourseController],
   providers: [
     CourseRepository,
     SectionRepository,
