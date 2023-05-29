@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Lesson } from '@prisma/client';
 import { DatabaseService } from 'src/modules/config/database/providers/services/database.service';
-import { CreateLessonDto } from '../dto/create-lesson.dto';
+import { CreateLessonDto } from '../../dto/create-lesson.dto';
 
 @Injectable()
 export class LessonRepository {

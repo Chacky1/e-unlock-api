@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Section } from '@prisma/client';
 import { DatabaseService } from 'src/modules/config/database/providers/services/database.service';
-import { CreateSectionDto } from '../dto/create-section.dto';
+import { CreateSectionDto } from '../../dto/create-section.dto';
 
 @Injectable()
 export class SectionRepository {

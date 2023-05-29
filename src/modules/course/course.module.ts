@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
-import { CourseRepository } from './repositories/course.repository';
-import { SectionRepository } from './repositories/section.repository';
-import { LessonRepository } from './repositories/lesson.repository';
+import { CourseRepository } from './providers/repositories/course.repository';
+import { SectionRepository } from './providers/repositories/section.repository';
+import { LessonRepository } from './providers/repositories/lesson.repository';
 
 @Module({
   imports: [],
