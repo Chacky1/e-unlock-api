@@ -32,7 +32,7 @@ describe('Section Service', () => {
 
       await service.create(toCreateSection);
 
-      expect(repository.createSection).toHaveBeenCalledWith(toCreateSection);
+      expect(repository.create).toHaveBeenCalledWith(toCreateSection);
     });
   });
 });

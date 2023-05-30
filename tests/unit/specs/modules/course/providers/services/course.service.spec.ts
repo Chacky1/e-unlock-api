@@ -32,7 +32,7 @@ describe('Course Service', () => {
 
       await service.create(toCreateCourse);
 
-      expect(repository.createCourse).toHaveBeenCalledWith(toCreateCourse);
+      expect(repository.create).toHaveBeenCalledWith(toCreateCourse);
     });
   });
 });

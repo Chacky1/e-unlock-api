@@ -32,7 +32,7 @@ describe('Lesson Service', () => {
 
       await service.create(toCreateLesson);
 
-      expect(repository.createLesson).toHaveBeenCalledWith(toCreateLesson);
+      expect(repository.create).toHaveBeenCalledWith(toCreateLesson);
     });
   });
 });
