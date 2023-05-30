@@ -8,7 +8,7 @@ describe('Course Service', () => {
   let repository;
 
   const courseRepositoryMock = {
-    createCourse: jest.fn(),
+    create: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -30,7 +30,7 @@ describe('Course Service', () => {
     it('should create a course when called.', async () => {
       const toCreateCourse = createFakeCourseDto();
 
-      await service.createCourse(toCreateCourse);
+      await service.create(toCreateCourse);
 
       expect(repository.createCourse).toHaveBeenCalledWith(toCreateCourse);
     });

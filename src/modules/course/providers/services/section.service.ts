@@ -6,7 +6,7 @@ import { SectionRepository } from '../repositories/section.repository';
 export class SectionService {
   public constructor(private readonly sectionRepository: SectionRepository) {}
 
-  public async createSection(section: CreateSectionDto) {
-    return await this.sectionRepository.createSection(section);
+  public async create(section: CreateSectionDto) {
+    return await this.sectionRepository.create(section);
   }
 }

@@ -7,7 +7,7 @@ import { CreateLessonDto } from '../../dto/create-lesson.dto';
 export class LessonRepository {
   public constructor(private readonly databaseService: DatabaseService) {}
 
-  public async createLesson(createLessonDto: CreateLessonDto): Promise<Lesson> {
+  public async create(createLessonDto: CreateLessonDto): Promise<Lesson> {
     const lesson = await this.databaseService.lesson.create({
       data: createLessonDto,
     });

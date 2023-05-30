@@ -7,9 +7,7 @@ import { CreateSectionDto } from '../../dto/create-section.dto';
 export class SectionRepository {
   public constructor(private readonly databaseService: DatabaseService) {}
 
-  public async createSection(
-    createSectionDto: CreateSectionDto,
-  ): Promise<Section> {
+  public async create(createSectionDto: CreateSectionDto): Promise<Section> {
     const section = await this.databaseService.section.create({
       data: createSectionDto,
     });

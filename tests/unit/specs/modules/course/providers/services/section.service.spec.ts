@@ -8,7 +8,7 @@ describe('Section Service', () => {
   let repository;
 
   const sectionRepositoryMock = {
-    createSection: jest.fn(),
+    create: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -30,7 +30,7 @@ describe('Section Service', () => {
     it('should create a section when called.', async () => {
       const toCreateSection = createFakeSectionDto();
 
-      await service.createSection(toCreateSection);
+      await service.create(toCreateSection);
 
       expect(repository.createSection).toHaveBeenCalledWith(toCreateSection);
     });
