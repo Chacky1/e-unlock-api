@@ -3,9 +3,10 @@ import { CreateCourseDto } from '../../../../../src/modules/course/dto/create-co
 
 export const createFakeCourseDto = (
   course: Partial<CreateCourseDto> = {},
+  override?: Partial<CreateCourseDto>,
 ): CreateCourseDto => ({
   name: course.name ?? faker.lorem.word(),
-  description: course.description ?? faker.lorem.paragraph(),
+  description: course.description ?? faker.lorem.paragraph(3),
   price:
     course.price ??
     faker.number.int({
@@ -18,4 +19,5 @@ export const createFakeCourseDto = (
       min: 0,
       max: 1000,
     }),
+  ...override,
 });
