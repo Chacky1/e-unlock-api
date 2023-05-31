@@ -3,9 +3,23 @@ import { CreateSectionDto } from '../../../../../src/modules/course/dto/create-s
 
 export const createFakeSectionDto = (
   section: Partial<CreateSectionDto> = {},
+  override?: Partial<CreateSectionDto>,
 ) => ({
-  name: section.name ?? faker.lorem.word(),
-  description: section.description ?? faker.lorem.paragraph(),
-  courseId: section.courseId ?? faker.number.int(),
-  courseOrder: section.courseOrder ?? faker.number.int(),
+  name:
+    section.name ??
+    faker.lorem.word({
+      length: 100,
+    }),
+  description: section.description ?? faker.lorem.paragraph(3),
+  courseId:
+    section.courseId ??
+    faker.number.int({
+      max: 1000,
+    }),
+  courseOrder:
+    section.courseOrder ??
+    faker.number.int({
+      max: 1000,
+    }),
+  ...override,
 });
