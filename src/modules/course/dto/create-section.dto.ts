@@ -1,8 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNumber, IsString } from 'class-validator';
+import { IsNumber, IsString, MinLength } from 'class-validator';
 
 export class CreateSectionDto {
   @IsString()
+  @MinLength(1, {
+    message: 'name must be longer than or equal to 1 characters.',
+  })
   @ApiProperty({
     description: 'The name of the section',
     example: 'Section name',
