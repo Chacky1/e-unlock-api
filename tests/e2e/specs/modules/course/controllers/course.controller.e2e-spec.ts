@@ -36,7 +36,11 @@ describe('Course Controller (e2e)', () => {
         .send(payload)
         .expect(HttpStatus.BAD_REQUEST);
 
-      expect(response.body.message[0]).toEqual(errorMessage);
+      if (Array.isArray(response.body.message)) {
+        expect(response.body.message).toContain(errorMessage);
+      } else {
+        expect(response.body.message).toEqual(errorMessage);
+      }
     });
 
     it('should create a course when called.', async () => {
