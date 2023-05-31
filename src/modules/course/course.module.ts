@@ -7,10 +7,13 @@ import { DatabaseModule } from '../config/database/database.module';
 import { SectionService } from './providers/services/section.service';
 import { LessonService } from './providers/services/lesson.service';
 import { CourseController } from './controllers/course.controller';
+import { SectionController } from './controllers/section.controller';
+import { ErrorsInterceptor } from './providers/interceptors/errors.interceptor';
+import { APP_INTERCEPTOR } from '@nestjs/core';
 
 @Module({
   imports: [DatabaseModule],
-  controllers: [CourseController],
+  controllers: [CourseController, SectionController],
   providers: [
     CourseRepository,
     SectionRepository,
@@ -18,6 +21,10 @@ import { CourseController } from './controllers/course.controller';
     CourseService,
     SectionService,
     LessonService,
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: ErrorsInterceptor,
+    },
   ],
 })
 export class CourseModule {}
