@@ -29,11 +29,4 @@ export class CreateLessonDto {
     example: 1,
   })
   public sectionOrder: number;
-
-  @IsString()
-  @ApiProperty({
-    description: 'The video file of the lesson',
-    example: 'Lesson video file',
-  })
-  public active: boolean;
 }
