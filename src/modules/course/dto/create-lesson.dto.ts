@@ -1,8 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, IsNumber } from 'class-validator';
+import { IsString, IsNumber, MinLength } from 'class-validator';
 
 export class CreateLessonDto {
   @IsString()
+  @MinLength(1, {
+    message: 'name must be longer than or equal to 1 characters.',
+  })
   @ApiProperty({
     description: 'The name of the lesson',
     example: 'Lesson name',
@@ -10,6 +13,9 @@ export class CreateLessonDto {
   public name: string;
 
   @IsString()
+  @MinLength(1, {
+    message: 'textContent must be longer than or equal to 1 characters.',
+  })
   @ApiProperty({
     description: 'The description of the lesson',
     example: 'Lesson description',
