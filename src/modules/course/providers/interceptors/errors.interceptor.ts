@@ -17,10 +17,10 @@ export class ErrorsInterceptor implements NestInterceptor {
     return next.handle().pipe(
       catchError((error: Error) => {
         if (error instanceof Prisma.PrismaClientKnownRequestError) {
-          return throwError(
-            () =>
-              new BadRequestException(`${error.meta.field_name} not found.`),
-          );
+          return throwError(() => {
+            const notFoundResource = error.meta.field_name;
+            return new BadRequestException(`${notFoundResource} not found.`);
+          });
         }
 
         return throwError(() => error);
