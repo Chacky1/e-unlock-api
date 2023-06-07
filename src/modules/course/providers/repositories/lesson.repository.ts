@@ -7,6 +7,16 @@ import { CreateLessonDto } from '../../dto/create-lesson.dto';
 export class LessonRepository {
   public constructor(private readonly databaseService: DatabaseService) {}
 
+  public async findOne(id: number): Promise<Lesson> {
+    const lesson = await this.databaseService.lesson.findUnique({
+      where: {
+        id,
+      },
+    });
+
+    return lesson;
+  }
+
   public async create(
     createLessonDto: CreateLessonDto,
     videoPath?: string,
