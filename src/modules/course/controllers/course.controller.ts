@@ -1,4 +1,11 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  NotFoundException,
+  Param,
+  Post,
+} from '@nestjs/common';
 import { CreateCourseDto } from '../dto/create-course.dto';
 import { CourseService } from '../providers/services/course.service';
 import { ApiParam } from '@nestjs/swagger';
@@ -15,7 +22,13 @@ export class CourseController {
   @Get(':id')
   @ApiParam({ name: 'id', type: Number })
   public async findOne(@Param('id') id: string) {
-    return await this.courseService.findOne(+id);
+    const course = await this.courseService.findOne(+id);
+
+    if (!course) {
+      throw new NotFoundException('Course not found.');
+    }
+
+    return course;
   }
 
   @Post()
