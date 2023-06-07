@@ -13,6 +13,23 @@ export class CourseRepository {
     return courses;
   }
 
+  public async findOne(id: number): Promise<Course> {
+    const course = await this.databaseService.course.findUnique({
+      where: {
+        id,
+      },
+      include: {
+        sections: {
+          include: {
+            lessons: true,
+          },
+        },
+      },
+    });
+
+    return course;
+  }
+
   public async create(createCourseDto: CreateCourseDto): Promise<Course> {
     const course = await this.databaseService.course.create({
       data: createCourseDto,
