@@ -38,17 +38,17 @@ describe('Course Service', () => {
 
   describe('findOne', () => {
     it('should return a course when called.', async () => {
-      const id = 1;
+      const existingCourseId = 29;
 
-      await service.findOne(id);
+      await service.findOne(existingCourseId);
 
-      expect(repository.findOne).toHaveBeenCalledWith(id);
+      expect(repository.findOne).toHaveBeenCalledWith(existingCourseId);
     });
 
     it('should return undefined if course does not exist.', async () => {
-      const id = 999;
+      const unknownLessonId = 999;
 
-      await expect(service.findOne(id)).resolves.toBeUndefined();
+      await expect(service.findOne(unknownLessonId)).resolves.toBeUndefined();
     });
   });
 
