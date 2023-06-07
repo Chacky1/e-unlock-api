@@ -23,6 +23,12 @@ describe('Course Controller (e2e)', () => {
     await app.close();
   });
 
+  describe('GET /courses', () => {
+    it('should return all courses when called.', async () => {
+      await request(app.getHttpServer()).get('/courses').expect(HttpStatus.OK);
+    });
+  });
+
   describe('POST /courses', () => {
     it.each<{ payload: CreateCourseDto; test: string; errorMessage: string }>([
       {
