@@ -1,6 +1,7 @@
 import { Test } from '@nestjs/testing';
 import { LessonRepository } from '../../../../../../../src/modules/course/providers/repositories/lesson.repository';
 import { LessonService } from '../../../../../../../src/modules/course/providers/services/lesson.service';
+import { StorageService } from '../../../../../../../src/modules/config/cloud/providers/services/storage.service';
 import { createFakeLessonDto } from '../../../../../../factories/course/dto/create-course/create-lesson.dto.factory';
 
 describe('Lesson Service', () => {
@@ -15,6 +16,7 @@ describe('Lesson Service', () => {
     const module = await Test.createTestingModule({
       providers: [
         LessonService,
+        StorageService,
         {
           provide: LessonRepository,
           useValue: lessonRepositoryMock,
