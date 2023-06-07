@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Transform } from 'class-transformer';
 import { IsString, IsNumber, MinLength } from 'class-validator';
 
 export class CreateLessonDto {
@@ -23,6 +24,7 @@ export class CreateLessonDto {
   public textContent: string;
 
   @IsNumber()
+  @Transform(({ value }) => Number(value))
   @ApiProperty({
     description: 'The section id of the lesson',
     example: 0,
@@ -30,6 +32,7 @@ export class CreateLessonDto {
   public sectionId: number;
 
   @IsNumber()
+  @Transform(({ value }) => Number(value))
   @ApiProperty({
     description: 'The order of the lesson',
     example: 1,

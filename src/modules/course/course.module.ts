@@ -11,9 +11,10 @@ import { SectionController } from './controllers/section.controller';
 import { ErrorsInterceptor } from './providers/interceptors/errors.interceptor';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { LessonController } from './controllers/lesson.controller';
+import { CloudModule } from '../config/cloud/cloud.module';
 
 @Module({
-  imports: [DatabaseModule],
+  imports: [DatabaseModule, CloudModule],
   controllers: [CourseController, SectionController, LessonController],
   providers: [
     CourseRepository,
