@@ -9,6 +9,7 @@ describe('Lesson Service', () => {
   let repository;
 
   const lessonRepositoryMock = {
+    findOne: jest.fn(),
     create: jest.fn(),
   };
 
@@ -26,6 +27,22 @@ describe('Lesson Service', () => {
 
     service = module.get<LessonService>(LessonService);
     repository = module.get<LessonRepository>(LessonRepository);
+  });
+
+  describe('findOne', () => {
+    it('should return a lesson when called.', async () => {
+      const existingLessonId = 57;
+
+      await service.findOne(existingLessonId);
+
+      expect(repository.findOne).toHaveBeenCalledWith(existingLessonId);
+    });
+
+    it('should return undefined if lesson does not exist.', async () => {
+      const unknownLessonId = 999;
+
+      await expect(service.findOne(unknownLessonId)).resolves.toBeUndefined();
+    });
   });
 
   describe('createLesson', () => {
