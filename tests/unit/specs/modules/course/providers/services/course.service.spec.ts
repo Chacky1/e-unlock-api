@@ -9,6 +9,7 @@ describe('Course Service', () => {
 
   const courseRepositoryMock = {
     findAll: jest.fn(),
+    findOne: jest.fn(),
     create: jest.fn(),
   };
 
@@ -32,6 +33,22 @@ describe('Course Service', () => {
       await service.findAll();
 
       expect(repository.findAll).toHaveBeenCalled();
+    });
+  });
+
+  describe('findOne', () => {
+    it('should return a course when called.', async () => {
+      const id = 1;
+
+      await service.findOne(id);
+
+      expect(repository.findOne).toHaveBeenCalledWith(id);
+    });
+
+    it('should return undefined if course does not exist.', async () => {
+      const id = 999;
+
+      await expect(service.findOne(id)).resolves.toBeUndefined();
     });
   });
 
