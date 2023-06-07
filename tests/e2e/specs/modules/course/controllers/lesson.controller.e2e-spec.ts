@@ -23,6 +23,24 @@ describe('Lesson Controller', () => {
     await app.close();
   });
 
+  describe('GET lessons/:id', () => {
+    it('should return a lesson when called.', async () => {
+      const existingLessonId = 57;
+
+      await request(app.getHttpServer())
+        .get(`/lessons/${existingLessonId}`)
+        .expect(HttpStatus.OK);
+    });
+
+    it('should return 404 when lesson does not exist.', async () => {
+      const unknownLessonId = 999;
+
+      await request(app.getHttpServer())
+        .get(`/lessons/${unknownLessonId}`)
+        .expect(HttpStatus.NOT_FOUND);
+    });
+  });
+
   describe('POST lessons', () => {
     it.each<{
       payload: CreateLessonDto;
