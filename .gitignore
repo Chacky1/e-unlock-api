@@ -39,3 +39,4 @@ lerna-debug.log*
 .env
 /prisma/migrations
 /tests/coverage
+google-storage-keys.json
