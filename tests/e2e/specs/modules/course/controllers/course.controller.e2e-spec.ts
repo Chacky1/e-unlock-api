@@ -29,6 +29,24 @@ describe('Course Controller (e2e)', () => {
     });
   });
 
+  describe('GET /courses/:id', () => {
+    it('should return a course when called.', async () => {
+      const existingCourseId = 1;
+
+      await request(app.getHttpServer())
+        .get(`/courses/${existingCourseId}`)
+        .expect(HttpStatus.OK);
+    });
+
+    it('should return 404 when course does not exist.', async () => {
+      const nonExistingCourseId = 999;
+
+      await request(app.getHttpServer())
+        .get(`/courses/${nonExistingCourseId}`)
+        .expect(HttpStatus.NOT_FOUND);
+    });
+  });
+
   describe('POST /courses', () => {
     it.each<{ payload: CreateCourseDto; test: string; errorMessage: string }>([
       {
