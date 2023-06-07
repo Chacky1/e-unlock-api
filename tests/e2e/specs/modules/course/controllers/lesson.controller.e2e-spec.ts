@@ -3,7 +3,7 @@ import { TestingModule, Test } from '@nestjs/testing';
 import * as request from 'supertest';
 import { CourseModule } from '../../../../../../src/modules/course/course.module';
 import { CreateLessonDto } from '../../../../../../src/modules/course/dto/create-lesson.dto';
-import { initNestApp } from '../../../../../e2e/helpers/nest-app.helper';
+import { initNestApp } from '../../../../helpers/nest-app.helper';
 import { createFakeLessonDto } from '../../../../../factories/course/dto/create-course/create-lesson.dto.factory';
 
 describe('Lesson Controller', () => {
@@ -58,12 +58,25 @@ describe('Lesson Controller', () => {
       }
     });
 
-    it('should create a lesson when called.', async () => {
+    it('should create a lesson when called without video.', async () => {
       const toCreateLesson = createFakeLessonDto({ sectionId: 1 });
 
       await request(app.getHttpServer())
         .post('/lessons')
         .send(toCreateLesson)
+        .expect(201);
+    });
+
+    it('should create a lesson when called with video.', async () => {
+      const toCreateLesson = createFakeLessonDto({ sectionId: 1 });
+
+      await request(app.getHttpServer())
+        .post('/lessons')
+        .attach('video', `${process.cwd()}/tests/e2e/assets/test-video.mp4`)
+        .field('name', toCreateLesson.name)
+        .field('textContent', toCreateLesson.textContent)
+        .field('sectionId', toCreateLesson.sectionId)
+        .field('sectionOrder', toCreateLesson.sectionOrder)
         .expect(201);
     });
   });
