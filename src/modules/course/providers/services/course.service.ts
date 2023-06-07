@@ -6,6 +6,10 @@ import { CreateCourseDto } from '../../dto/create-course.dto';
 export class CourseService {
   public constructor(private readonly courseRepository: CourseRepository) {}
 
+  public async findAll() {
+    return await this.courseRepository.findAll();
+  }
+
   public async create(course: CreateCourseDto) {
     return await this.courseRepository.create(course);
   }

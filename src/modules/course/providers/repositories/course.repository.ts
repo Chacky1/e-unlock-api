@@ -7,6 +7,12 @@ import { CreateCourseDto } from '../../dto/create-course.dto';
 export class CourseRepository {
   public constructor(private readonly databaseService: DatabaseService) {}
 
+  public async findAll(): Promise<Course[]> {
+    const courses = await this.databaseService.course.findMany();
+
+    return courses;
+  }
+
   public async create(createCourseDto: CreateCourseDto): Promise<Course> {
     const course = await this.databaseService.course.create({
       data: createCourseDto,
