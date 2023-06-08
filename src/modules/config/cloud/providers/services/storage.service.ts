@@ -6,6 +6,7 @@ import { UploadResponse } from '../../types/upload.type';
 
 const { CLOUD_PROJECT_ID, CLOUD_CREDENTIALS_FILE_PATH } = process.env;
 const URL_TIME_TO_LIVE = 1000 * 60 * 10; // 10 minutes
+const CLOUD_STORAGE_PROTOCOL = 'gs';
 
 @Injectable()
 export class StorageService {
@@ -18,9 +19,14 @@ export class StorageService {
     bucketName: string,
     filePath: string,
   ): Promise<GetSignedUrlResponse> {
+    const filePathWithinBucket = filePath.replace(
+      `${CLOUD_STORAGE_PROTOCOL}://${bucketName}/`,
+      '',
+    );
+
     const url = await this.storage
       .bucket(bucketName)
-      .file(filePath)
+      .file(filePathWithinBucket)
       .getSignedUrl({
         action: 'read',
         expires: Date.now() + URL_TIME_TO_LIVE,
@@ -51,7 +57,7 @@ export class StorageService {
     );
 
     const responseData = {
-      path: `gs://${bucketName}/${bucketFilePath}`,
+      path: `${CLOUD_STORAGE_PROTOCOL}://${bucketName}/${bucketFilePath}`,
       url: publicUrl,
       name: uploadedFile.name,
     };
