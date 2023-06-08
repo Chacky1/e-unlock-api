@@ -5,6 +5,8 @@ import { createSwaggerDocument } from './swagger/swagger';
 import { DatabaseService } from 'src/modules/config/database/providers/services/database.service';
 import { validationPipeDefaultOptions } from '../shared/validation/constants/validation.constant';
 
+const { PORT } = process.env;
+
 const SWAGGER_PATH = 'swagger';
 
 async function bootstrap() {
@@ -16,7 +18,7 @@ async function bootstrap() {
 
   createSwaggerDocument(SWAGGER_PATH, app);
 
-  await app.listen(3000);
+  await app.listen(PORT);
 }
 
 export { bootstrap };
