@@ -8,6 +8,8 @@ import { initNestApp } from '../../../../../e2e/helpers/nest-app.helper';
 
 describe('Course Controller (e2e)', () => {
   let app: INestApplication;
+  let existingCourseId: number;
+  const unknownCourseId = 999;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -17,6 +19,14 @@ describe('Course Controller (e2e)', () => {
     app = module.createNestApplication();
 
     await initNestApp(app);
+
+    const fakeCourse = createFakeCourseDto();
+
+    const courseResponse = await request(app.getHttpServer())
+      .post('/courses')
+      .send(fakeCourse);
+
+    existingCourseId = courseResponse.body.id;
   });
 
   afterAll(async () => {
@@ -31,18 +41,14 @@ describe('Course Controller (e2e)', () => {
 
   describe('GET /courses/:id', () => {
     it('should return a course when called.', async () => {
-      const existingCourseId = 1;
-
       await request(app.getHttpServer())
         .get(`/courses/${existingCourseId}`)
         .expect(HttpStatus.OK);
     });
 
     it('should return 404 when course does not exist.', async () => {
-      const nonExistingCourseId = 999;
-
       await request(app.getHttpServer())
-        .get(`/courses/${nonExistingCourseId}`)
+        .get(`/courses/${unknownCourseId}`)
         .expect(HttpStatus.NOT_FOUND);
     });
   });
