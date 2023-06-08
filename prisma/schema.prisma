@@ -17,10 +17,12 @@ model Course {
   duration    Int
   price       Int
   active      Boolean   @default(false)
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  publishedAt DateTime?
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+  publishedAt DateTime? @map("published_at")
   sections    Section[]
+
+  @@map("courses")
 }
 
 model Section {
@@ -28,25 +30,29 @@ model Section {
   name        String
   description String?   @db.Text
   active      Boolean   @default(false)
-  courseOrder Int
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  publishedAt DateTime?
+  courseOrder Int       @map("course_order")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+  publishedAt DateTime? @map("published_at")
   course      Course    @relation(fields: [courseId], references: [id])
-  courseId    Int
+  courseId    Int       @map("course_id")
   lessons     Lesson[]
+
+  @@map("sections")
 }
 
 model Lesson {
   id           Int       @id @default(autoincrement())
   name         String
-  textContent  String?   @db.Text
+  textContent  String?   @map("text_content") @db.Text
   active       Boolean   @default(false)
-  sectionOrder Int
-  videoUrl     String?
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
-  publishedAt  DateTime?
+  sectionOrder Int       @map("section_order")
+  videoUrl     String?   @map("video_url")
+  createdAt    DateTime  @default(now()) @map("created_at")
+  updatedAt    DateTime  @updatedAt @map("updated_at")
+  publishedAt  DateTime? @map("published_at")
   section      Section   @relation(fields: [sectionId], references: [id])
-  sectionId    Int
+  sectionId    Int       @map("section_id")
+
+  @@map("lessons")
 }
