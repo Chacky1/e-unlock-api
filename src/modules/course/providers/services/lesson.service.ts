@@ -18,8 +18,6 @@ export class LessonService {
   public async findOne(id: number): Promise<Lesson> {
     const lesson = await this.lessonRepository.findOne(id);
 
-    console.log('lesson', lesson);
-
     if (!lesson) {
       return undefined;
     }
