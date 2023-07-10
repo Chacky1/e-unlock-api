@@ -5,8 +5,8 @@ import {
   Injectable,
   NestInterceptor,
 } from '@nestjs/common';
-import { Prisma } from '@prisma/client';
 import { Observable, catchError, throwError } from 'rxjs';
+import { ResourceNotFoundError } from '../../../../shared/error/types/resource-not-found.error';
 
 @Injectable()
 export class ErrorsInterceptor implements NestInterceptor {
@@ -16,10 +16,10 @@ export class ErrorsInterceptor implements NestInterceptor {
   ): Observable<any> {
     return next.handle().pipe(
       catchError((error: Error) => {
-        if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        if (error instanceof ResourceNotFoundError) {
           return throwError(() => {
-            const notFoundResource = error.meta.field_name;
-            return new BadRequestException(`${notFoundResource} not found.`);
+            const errorMessage = error.message;
+            return new BadRequestException(errorMessage);
           });
         }
 

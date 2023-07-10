@@ -6,15 +6,24 @@ import { initNestApp } from '../../../../../e2e/helpers/nest-app.helper';
 import { createFakeSectionDto } from '../../../../../factories/course/dto/create-course/create-section.dto.factory';
 import { CreateSectionDto } from '../../../../../../src/modules/course/dto/create-section.dto';
 import { createFakeCourseDto } from '../../../../../factories/course/dto/create-course/create-course.dto.factory';
+import { fetchAccessToken } from '../../../../helpers/access-token.helper';
+import { ScopeGuard } from '../../../../../../src/shared/auth/providers/guards/scope.guard';
+import { JwtStrategy } from '../../../../../../src/shared/auth/providers/strategies/jwt.strategy';
 
 describe('Section Controller', () => {
   let app: INestApplication;
+  let accessToken: string;
   let existingCourseId: number;
   const unknownCourseId = 999;
+
+  beforeAll(async () => {
+    accessToken = await fetchAccessToken();
+  });
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [CourseModule],
+      providers: [JwtStrategy, ScopeGuard],
     }).compile();
 
     app = module.createNestApplication();
@@ -25,6 +34,7 @@ describe('Section Controller', () => {
 
     const courseResponse = await request(app.getHttpServer())
       .post('/courses')
+      .set('Authorization', `Bearer ${accessToken}`)
       .send(fakeCourse);
 
     existingCourseId = courseResponse.body.id;
@@ -51,11 +61,12 @@ describe('Section Controller', () => {
       {
         payload: createFakeSectionDto({ courseId: unknownCourseId }),
         test: 'should return 400 when course id does not exist.',
-        errorMessage: 'course_id not found.',
+        errorMessage: 'Resource COURSE with id 999 not found.',
       },
     ])('$test', async ({ payload, errorMessage }) => {
       const response = await request(app.getHttpServer())
         .post('/sections')
+        .set('Authorization', `Bearer ${accessToken}`)
         .send(payload)
         .expect(HttpStatus.BAD_REQUEST);
 
@@ -71,8 +82,11 @@ describe('Section Controller', () => {
         courseId: existingCourseId,
       });
 
+      console.log('toCreateSection', toCreateSection);
+
       await request(app.getHttpServer())
         .post('/sections')
+        .set('Authorization', `Bearer ${accessToken}`)
         .send(toCreateSection)
         .expect(201);
     });
