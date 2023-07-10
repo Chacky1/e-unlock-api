@@ -6,6 +6,7 @@ import {
   Param,
   Post,
   UploadedFile,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -15,6 +16,9 @@ import { CreateLessonDto } from '../dto/create-lesson.dto';
 import { ErrorsInterceptor } from '../providers/interceptors/errors.interceptor';
 import { ApiConsumes, ApiParam } from '@nestjs/swagger';
 import { Lesson } from '../types/lesson.type';
+import { AuthGuard } from '@nestjs/passport';
+import { ScopeGuard } from '../../../shared/auth/providers/guards/scope.guard';
+import { Scope } from '../../../shared/auth/decorator/scope.decorator';
 
 const UPLOAD_FILE_PATH = `${tmpdir()}/lessons/uploads`;
 
@@ -24,6 +28,8 @@ export class LessonController {
 
   @Get(':id')
   @ApiParam({ name: 'id', type: Number })
+  @UseGuards(AuthGuard('jwt'), ScopeGuard)
+  @Scope('read:lessons')
   public async findOne(@Param('id') id: string): Promise<Lesson> {
     const lesson = await this.lessonService.findOne(+id);
 
@@ -39,6 +45,8 @@ export class LessonController {
     ErrorsInterceptor,
     FileInterceptor('video', { dest: UPLOAD_FILE_PATH }),
   )
+  @UseGuards(AuthGuard('jwt'), ScopeGuard)
+  @Scope('add:lessons')
   @ApiConsumes('multipart/form-data')
   public async create(
     @Body() createLessonDto: CreateLessonDto,
