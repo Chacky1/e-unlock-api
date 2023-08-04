@@ -31,11 +31,13 @@ model Course {
   duration    Int
   price       Int
   active      Boolean      @default(false)
+  categoryId  Int          @map("category_id")
   createdAt   DateTime     @default(now()) @map("created_at")
   updatedAt   DateTime     @updatedAt @map("updated_at")
   publishedAt DateTime?    @map("published_at")
   users       UserCourse[]
   sections    Section[]
+  category    Category     @relation(fields: [categoryId], references: [id])
 
   @@map("courses")
 }
@@ -83,4 +85,15 @@ model Lesson {
   sectionId    Int       @map("section_id")
 
   @@map("lessons")
+}
+
+model Category {
+  id          Int      @id @default(autoincrement())
+  name        String
+  description String?  @db.Text
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+  courses     Course[]
+
+  @@map("categories")
 }
