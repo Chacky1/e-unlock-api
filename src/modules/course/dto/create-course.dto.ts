@@ -32,4 +32,11 @@ export class CreateCourseDto {
     example: 0,
   })
   public duration: number;
+
+  @IsNumber()
+  @ApiProperty({
+    description: 'The category id of the course',
+    example: 0,
+  })
+  public categoryId: number;
 }

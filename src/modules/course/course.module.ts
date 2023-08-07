@@ -12,17 +12,27 @@ import { ErrorsInterceptor } from './providers/interceptors/errors.interceptor';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { LessonController } from './controllers/lesson.controller';
 import { CloudModule } from '../config/cloud/cloud.module';
+import { CategoryController } from './controllers/category.controller';
+import { CategoryService } from './providers/services/category.service';
+import { CategoryRepository } from './providers/repositories/category.repository';
 
 @Module({
   imports: [DatabaseModule, CloudModule],
-  controllers: [CourseController, SectionController, LessonController],
+  controllers: [
+    CourseController,
+    SectionController,
+    LessonController,
+    CategoryController,
+  ],
   providers: [
     CourseRepository,
     SectionRepository,
     LessonRepository,
+    CategoryRepository,
     CourseService,
     SectionService,
     LessonService,
+    CategoryService,
     {
       provide: APP_INTERCEPTOR,
       useClass: ErrorsInterceptor,
