@@ -4,6 +4,7 @@ import * as request from 'supertest';
 import { CourseModule } from '../../../../../../src/modules/course/course.module';
 import { CreateLessonDto } from '../../../../../../src/modules/course/dto/create-lesson.dto';
 import { initNestApp } from '../../../../helpers/nest-app.helper';
+import { createFakeCategoryDto } from '../../../../../factories/course/dto/create-course/create-category.dto.factory';
 import { createFakeLessonDto } from '../../../../../factories/course/dto/create-course/create-lesson.dto.factory';
 import { createFakeSectionDto } from '../../../../../factories/course/dto/create-course/create-section.dto.factory';
 import { createFakeCourseDto } from '../../../../../factories/course/dto/create-course/create-course.dto.factory';
@@ -34,7 +35,16 @@ describe('Lesson Controller', () => {
 
     await initNestApp(app);
 
-    const fakeCourse = createFakeCourseDto();
+    const fakeCategory = createFakeCategoryDto();
+
+    const categoryResponse = await request(app.getHttpServer())
+      .post('/categories')
+      .set('Authorization', `Bearer ${accessToken}`)
+      .send(fakeCategory);
+
+    const fakeCourse = createFakeCourseDto({
+      categoryId: categoryResponse.body.id,
+    });
 
     const courseResponse = await request(app.getHttpServer())
       .post('/courses')
