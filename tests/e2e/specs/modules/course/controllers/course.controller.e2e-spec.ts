@@ -3,8 +3,9 @@ import { Test, TestingModule } from '@nestjs/testing';
 import * as request from 'supertest';
 import { CourseModule } from '../../../../../../src/modules/course/course.module';
 import { createFakeCourseDto } from '../../../../../factories/course/dto/create-course/create-course.dto.factory';
+import { createFakeCategoryDto } from '../../../../../factories/course/dto/create-course/create-category.dto.factory';
 import { CreateCourseDto } from '../../../../../../src/modules/course/dto/create-course.dto';
-import { initNestApp } from '../../../../../e2e/helpers/nest-app.helper';
+import { initNestApp } from '../../../../helpers/nest-app.helper';
 import { fetchAccessToken } from '../../../../helpers/access-token.helper';
 import { ScopeGuard } from '../../../../../../src/shared/auth/providers/guards/scope.guard';
 import { JwtStrategy } from '../../../../../../src/shared/auth/providers/strategies/jwt.strategy';
@@ -12,6 +13,7 @@ import { JwtStrategy } from '../../../../../../src/shared/auth/providers/strateg
 describe('Course Controller (e2e)', () => {
   let app: INestApplication;
   let accessToken: string;
+  let existingCategoryId: number;
   let existingCourseId: number;
   const unknownCourseId = 999;
 
@@ -29,7 +31,18 @@ describe('Course Controller (e2e)', () => {
 
     await initNestApp(app);
 
-    const fakeCourse = createFakeCourseDto();
+    const fakeCategory = createFakeCategoryDto();
+
+    const categoryResponse = await request(app.getHttpServer())
+      .post('/categories')
+      .set('Authorization', `Bearer ${accessToken}`)
+      .send(fakeCategory);
+
+    existingCategoryId = categoryResponse.body.id;
+
+    const fakeCourse = createFakeCourseDto({
+      categoryId: existingCategoryId,
+    });
 
     const courseResponse = await request(app.getHttpServer())
       .post('/courses')
@@ -90,7 +103,9 @@ describe('Course Controller (e2e)', () => {
     });
 
     it('should create a course when called.', async () => {
-      const toCreateCourse = createFakeCourseDto();
+      const toCreateCourse = createFakeCourseDto({
+        categoryId: existingCategoryId,
+      });
 
       await request(app.getHttpServer())
         .post('/courses')

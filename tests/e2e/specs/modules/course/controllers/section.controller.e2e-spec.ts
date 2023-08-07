@@ -3,9 +3,10 @@ import { TestingModule, Test } from '@nestjs/testing';
 import * as request from 'supertest';
 import { CourseModule } from '../../../../../../src/modules/course/course.module';
 import { initNestApp } from '../../../../../e2e/helpers/nest-app.helper';
+import { createFakeCategoryDto } from '../../../../../factories/course/dto/create-course/create-category.dto.factory';
+import { createFakeCourseDto } from '../../../../../factories/course/dto/create-course/create-course.dto.factory';
 import { createFakeSectionDto } from '../../../../../factories/course/dto/create-course/create-section.dto.factory';
 import { CreateSectionDto } from '../../../../../../src/modules/course/dto/create-section.dto';
-import { createFakeCourseDto } from '../../../../../factories/course/dto/create-course/create-course.dto.factory';
 import { fetchAccessToken } from '../../../../helpers/access-token.helper';
 import { ScopeGuard } from '../../../../../../src/shared/auth/providers/guards/scope.guard';
 import { JwtStrategy } from '../../../../../../src/shared/auth/providers/strategies/jwt.strategy';
@@ -30,7 +31,16 @@ describe('Section Controller', () => {
 
     await initNestApp(app);
 
-    const fakeCourse = createFakeCourseDto();
+    const fakeCategory = createFakeCategoryDto();
+
+    const categoryResponse = await request(app.getHttpServer())
+      .post('/categories')
+      .set('Authorization', `Bearer ${accessToken}`)
+      .send(fakeCategory);
+
+    const fakeCourse = createFakeCourseDto({
+      categoryId: categoryResponse.body.id,
+    });
 
     const courseResponse = await request(app.getHttpServer())
       .post('/courses')
@@ -81,8 +91,6 @@ describe('Section Controller', () => {
       const toCreateSection = createFakeSectionDto({
         courseId: existingCourseId,
       });
-
-      console.log('toCreateSection', toCreateSection);
 
       await request(app.getHttpServer())
         .post('/sections')
