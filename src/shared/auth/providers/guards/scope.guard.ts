@@ -18,7 +18,7 @@ export class ScopeGuard implements CanActivate {
       context.getHandler(),
     );
     if (!requiredScope) {
-      return true;
+      return false;
     }
 
     const { user } = context.switchToHttp().getRequest();
