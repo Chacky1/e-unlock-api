@@ -27,7 +27,7 @@ export class ScopeGuard implements CanActivate {
 
     if (!hasScope) {
       throw new UnauthorizedException(
-        "Le client n'a pas les scopes nécessaires pour cette ressource.",
+        'Client does not have the required scope to access this resource.',
       );
     }
 
