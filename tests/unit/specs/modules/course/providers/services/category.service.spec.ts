@@ -2,6 +2,7 @@ import { Test } from '@nestjs/testing';
 import { CategoryRepository } from '../../../../../../../src/modules/course/providers/repositories/category.repository';
 import { CategoryService } from '../../../../../../../src/modules/course/providers/services/category.service';
 import { createFakeCategoryDto } from '../../../../../../factories/course/dto/create-course/create-category.dto.factory';
+import { StorageService } from '../../../../../../../src/modules/config/cloud/providers/services/storage.service';
 
 describe('Category Service', () => {
   let service;
@@ -17,6 +18,7 @@ describe('Category Service', () => {
     const module = await Test.createTestingModule({
       providers: [
         CategoryService,
+        StorageService,
         {
           provide: CategoryRepository,
           useValue: categoryRepositoryMock,
