@@ -23,9 +23,15 @@ export class CategoryRepository {
     return course;
   }
 
-  public async create(createCategoryDto: CreateCategoryDto): Promise<Category> {
+  public async create(
+    createCategoryDto: CreateCategoryDto,
+    imagePath?: string,
+  ): Promise<Category> {
     const course = await this.databaseService.category.create({
-      data: createCategoryDto,
+      data: {
+        ...createCategoryDto,
+        imageUrl: imagePath,
+      },
     });
 
     return course;

@@ -6,13 +6,20 @@ import {
   NotFoundException,
   Post,
   Body,
+  UseInterceptors,
+  UploadedFile,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { ApiParam } from '@nestjs/swagger';
+import { ApiConsumes, ApiParam } from '@nestjs/swagger';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { tmpdir } from 'os';
 import { ScopeGuard } from '../../../shared/auth/providers/guards/scope.guard';
 import { Scope } from '../../../shared/auth/decorator/scope.decorator';
 import { CreateCategoryDto } from '../dto/create-category.dto';
 import { CategoryService } from '../providers/services/category.service';
+import { ErrorsInterceptor } from '../providers/interceptors/errors.interceptor';
+
+const UPLOAD_FILE_PATH = `${tmpdir()}/categories/uploads`;
 
 @Controller('categories')
 export class CategoryController {
@@ -40,9 +47,17 @@ export class CategoryController {
   }
 
   @Post()
+  @UseInterceptors(
+    ErrorsInterceptor,
+    FileInterceptor('image', { dest: UPLOAD_FILE_PATH }),
+  )
   @UseGuards(AuthGuard('jwt'), ScopeGuard)
   @Scope('add:categories')
-  public async create(@Body() createCategoryDto: CreateCategoryDto) {
-    return await this.categoryService.create(createCategoryDto);
+  @ApiConsumes('multipart/form-data')
+  public async create(
+    @Body() createCategoryDto: CreateCategoryDto,
+    @UploadedFile() image: Express.Multer.File,
+  ) {
+    return await this.categoryService.create(createCategoryDto, image);
   }
 }
