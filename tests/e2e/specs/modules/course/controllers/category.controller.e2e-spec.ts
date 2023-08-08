@@ -68,13 +68,15 @@ describe('Category Controller (e2e)', () => {
   });
 
   describe('POST /categories', () => {
-    it('should create a category when called.', async () => {
-      const fakeCategory = createFakeCategoryDto();
+    it('should create a category when called with an image.', async () => {
+      const toCreateCategory = createFakeCategoryDto();
 
       await request(app.getHttpServer())
         .post('/categories')
         .set('Authorization', `Bearer ${accessToken}`)
-        .send(fakeCategory)
+        .attach('image', `${process.cwd()}/tests/e2e/assets/test-image.png`)
+        .field('name', toCreateCategory.name)
+        .field('description', toCreateCategory.description)
         .expect(HttpStatus.CREATED);
     });
   });

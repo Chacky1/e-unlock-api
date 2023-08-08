@@ -159,7 +159,7 @@ describe('Lesson Controller', () => {
         .field('textContent', toCreateLesson.textContent)
         .field('sectionId', toCreateLesson.sectionId)
         .field('sectionOrder', toCreateLesson.sectionOrder)
-        .expect(201);
+        .expect(HttpStatus.CREATED);
     });
   });
 });
