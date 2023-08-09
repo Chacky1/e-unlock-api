@@ -20,6 +20,13 @@ export class CreateCategoryDto {
   })
   public description: string;
 
+  @IsString()
+  @ApiProperty({
+    description: 'The hex color of the category (will be used as background)',
+    example: '#000000',
+  })
+  public color: string;
+
   @IsReadOnly()
   @IsOptional()
   @ApiPropertyOptional({
