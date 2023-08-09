@@ -67,6 +67,22 @@ describe('Category Controller (e2e)', () => {
     });
   });
 
+  describe('GET /categories/:id/courses', () => {
+    it('should return all courses from a category when called.', async () => {
+      await request(app.getHttpServer())
+        .get(`/categories/${existingCategoryId}/courses`)
+        .set('Authorization', `Bearer ${accessToken}`)
+        .expect(HttpStatus.OK);
+    });
+
+    it('should return 404 when category does not exist.', async () => {
+      await request(app.getHttpServer())
+        .get(`/categories/${unknownCategoryId}/courses`)
+        .set('Authorization', `Bearer ${accessToken}`)
+        .expect(HttpStatus.NOT_FOUND);
+    });
+  });
+
   describe('POST /categories', () => {
     it('should create a category when called with an image.', async () => {
       const toCreateCategory = createFakeCategoryDto();
