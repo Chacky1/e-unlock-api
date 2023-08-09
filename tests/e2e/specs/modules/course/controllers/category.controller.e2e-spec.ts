@@ -77,6 +77,7 @@ describe('Category Controller (e2e)', () => {
         .attach('image', `${process.cwd()}/tests/e2e/assets/test-image.png`)
         .field('name', toCreateCategory.name)
         .field('description', toCreateCategory.description)
+        .field('color', toCreateCategory.color)
         .expect(HttpStatus.CREATED);
     });
   });

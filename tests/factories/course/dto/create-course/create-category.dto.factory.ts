@@ -7,5 +7,6 @@ export const createFakeCategoryDto = (
 ): CreateCategoryDto => ({
   name: category.name ?? faker.lorem.word(),
   description: category.description ?? faker.lorem.paragraph(3),
+  color: category.color ?? faker.internet.color(),
   ...override,
 });
