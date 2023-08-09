@@ -102,7 +102,7 @@ describe('Course Controller (e2e)', () => {
       }
     });
 
-    it('should create a course when called.', async () => {
+    it('should create a course when called with an image.', async () => {
       const toCreateCourse = createFakeCourseDto({
         categoryId: existingCategoryId,
       });
@@ -110,8 +110,13 @@ describe('Course Controller (e2e)', () => {
       await request(app.getHttpServer())
         .post('/courses')
         .set('Authorization', `Bearer ${accessToken}`)
-        .send(toCreateCourse)
-        .expect(201);
+        .attach('image', `${process.cwd()}/tests/e2e/assets/test-image.png`)
+        .field('name', toCreateCourse.name)
+        .field('description', toCreateCourse.description)
+        .field('categoryId', toCreateCourse.categoryId)
+        .field('price', toCreateCourse.price)
+        .field('issue', toCreateCourse.issue)
+        .expect(HttpStatus.CREATED);
     });
   });
 });
