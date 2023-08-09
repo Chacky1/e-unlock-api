@@ -24,12 +24,17 @@ import { CreateCategoryDto } from '../dto/create-category.dto';
 import { CategoryService } from '../providers/services/category.service';
 import { ErrorsInterceptor } from '../providers/interceptors/errors.interceptor';
 import { Category } from '../types/category.type';
+import { Course } from '../types/course.type';
+import { CourseService } from '../providers/services/course.service';
 
 const UPLOAD_FILE_PATH = `${tmpdir()}/categories/uploads`;
 
 @Controller('categories')
 export class CategoryController {
-  constructor(private readonly categoryService: CategoryService) {}
+  constructor(
+    private readonly categoryService: CategoryService,
+    private readonly courseService: CourseService,
+  ) {}
 
   @Get()
   @UseGuards(AuthGuard('jwt'), ScopeGuard)
@@ -68,5 +73,19 @@ export class CategoryController {
     @UploadedFile() image: Express.Multer.File,
   ) {
     return await this.categoryService.create(createCategoryDto, image);
+  }
+
+  @Get(':id/courses')
+  @UseInterceptors(ErrorsInterceptor)
+  @ApiParam({ name: 'id', type: Number })
+  @UseGuards(AuthGuard('jwt'), ScopeGuard)
+  @Scope('search:categories.courses')
+  @ApiOkResponse({ type: Course, isArray: true })
+  public async findCourses(@Param('id') id: string) {
+    const courses = await this.courseService.search({
+      categoryId: +id,
+    });
+
+    return courses;
   }
 }

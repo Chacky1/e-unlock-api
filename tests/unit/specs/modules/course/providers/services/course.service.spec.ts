@@ -10,6 +10,7 @@ describe('Course Service', () => {
   const courseRepositoryMock = {
     findAll: jest.fn(),
     findOne: jest.fn(),
+    search: jest.fn(),
     create: jest.fn(),
   };
 
@@ -33,6 +34,27 @@ describe('Course Service', () => {
       await service.findAll();
 
       expect(repository.findAll).toHaveBeenCalled();
+    });
+  });
+
+  describe('search', () => {
+    it('should return all courses when called.', async () => {
+      await service.search();
+
+      expect(repository.search).toHaveBeenCalled();
+    });
+
+    it('should return all matching courses when called with search params.', async () => {
+      const searchParams = {
+        id: 1,
+        name: 'name',
+        description: 'description',
+        categoryId: 1,
+      };
+
+      await service.search(searchParams);
+
+      expect(repository.search).toHaveBeenCalledWith(searchParams);
     });
   });
 

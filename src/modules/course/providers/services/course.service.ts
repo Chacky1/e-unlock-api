@@ -10,6 +10,10 @@ export class CourseService {
     return await this.courseRepository.findAll();
   }
 
+  public async search(search: CourseSearch) {
+    return await this.courseRepository.search(search);
+  }
+
   public async findOne(id: number) {
     return await this.courseRepository.findOne(id);
   }
@@ -17,4 +21,11 @@ export class CourseService {
   public async create(course: CreateCourseDto) {
     return await this.courseRepository.create(course);
   }
+}
+
+export interface CourseSearch {
+  id?: number;
+  name?: string;
+  description?: string;
+  categoryId?: number;
 }

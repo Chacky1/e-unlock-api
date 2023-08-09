@@ -4,6 +4,7 @@ import {
   ExecutionContext,
   Injectable,
   NestInterceptor,
+  NotFoundException,
 } from '@nestjs/common';
 import { Observable, catchError, throwError } from 'rxjs';
 import { ResourceNotFoundError } from '../../../../shared/error/types/resource-not-found.error';
@@ -16,7 +17,20 @@ export class ErrorsInterceptor implements NestInterceptor {
   ): Observable<any> {
     return next.handle().pipe(
       catchError((error: Error) => {
-        if (error instanceof ResourceNotFoundError) {
+        const request = context.switchToHttp().getRequest();
+        const requestMethod = request.method;
+
+        if (error instanceof ResourceNotFoundError && requestMethod === 'GET') {
+          return throwError(() => {
+            const errorMessage = error.message;
+            return new NotFoundException(errorMessage);
+          });
+        }
+
+        if (
+          error instanceof ResourceNotFoundError &&
+          requestMethod === 'POST'
+        ) {
           return throwError(() => {
             const errorMessage = error.message;
             return new BadRequestException(errorMessage);
