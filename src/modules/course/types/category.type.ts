@@ -1,22 +1,25 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsOptional, IsString } from 'class-validator';
+import { IsOptional } from 'class-validator';
 
 export class Category {
-  @IsString()
   @ApiProperty({
     description: 'The name of the category',
     example: "Category's name",
   })
   public name: string;
 
-  @IsString()
   @ApiProperty({
     description: 'The description of the category',
     example: "Category's description",
   })
   public description: string;
 
-  @IsString()
+  @ApiProperty({
+    description: 'The hex color of the category (will be used as background)',
+    example: '#000000',
+  })
+  public color: string;
+
   @IsOptional()
   @ApiPropertyOptional({
     description: 'The image url of the category',
