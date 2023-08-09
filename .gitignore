@@ -36,6 +36,7 @@ lerna-debug.log*
 
 # misc
 /docker/e-unlock-dev/mysql
+/docker/e-unlock-test/mysql
 .env
 /prisma/migrations
 /tests/coverage
