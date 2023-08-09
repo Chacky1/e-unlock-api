@@ -13,12 +13,7 @@ export const createFakeCourseDto = (
       min: 0,
       max: 100000,
     }),
-  duration:
-    course.duration ??
-    faker.number.int({
-      min: 0,
-      max: 1000,
-    }),
+  issue: course.issue ?? faker.lorem.sentence(),
   categoryId: course.categoryId ?? faker.number.int(),
   ...override,
 });

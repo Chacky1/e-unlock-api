@@ -14,7 +14,12 @@ import { tmpdir } from 'os';
 import { LessonService } from '../providers/services/lesson.service';
 import { CreateLessonDto } from '../dto/create-lesson.dto';
 import { ErrorsInterceptor } from '../providers/interceptors/errors.interceptor';
-import { ApiConsumes, ApiParam } from '@nestjs/swagger';
+import {
+  ApiConsumes,
+  ApiCreatedResponse,
+  ApiOkResponse,
+  ApiParam,
+} from '@nestjs/swagger';
 import { Lesson } from '../types/lesson.type';
 import { AuthGuard } from '@nestjs/passport';
 import { ScopeGuard } from '../../../shared/auth/providers/guards/scope.guard';
@@ -30,6 +35,7 @@ export class LessonController {
   @ApiParam({ name: 'id', type: Number })
   @UseGuards(AuthGuard('jwt'), ScopeGuard)
   @Scope('read:lessons')
+  @ApiOkResponse({ type: Lesson })
   public async findOne(@Param('id') id: string): Promise<Lesson> {
     const lesson = await this.lessonService.findOne(+id);
 
@@ -47,6 +53,9 @@ export class LessonController {
   )
   @UseGuards(AuthGuard('jwt'), ScopeGuard)
   @Scope('add:lessons')
+  @ApiCreatedResponse({
+    type: CreateLessonDto,
+  })
   @ApiConsumes('multipart/form-data')
   public async create(
     @Body() createLessonDto: CreateLessonDto,

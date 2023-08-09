@@ -11,6 +11,7 @@ import { ErrorsInterceptor } from '../providers/interceptors/errors.interceptor'
 import { AuthGuard } from '@nestjs/passport';
 import { ScopeGuard } from '../../../shared/auth/providers/guards/scope.guard';
 import { Scope } from '../../../shared/auth/decorator/scope.decorator';
+import { ApiCreatedResponse } from '@nestjs/swagger';
 
 @Controller('sections')
 export class SectionController {
@@ -20,6 +21,9 @@ export class SectionController {
   @UseInterceptors(ErrorsInterceptor)
   @UseGuards(AuthGuard('jwt'), ScopeGuard)
   @Scope('add:sections')
+  @ApiCreatedResponse({
+    type: CreateSectionDto,
+  })
   public async create(@Body() createSectionDto: CreateSectionDto) {
     return await this.sectionService.create(createSectionDto);
   }
