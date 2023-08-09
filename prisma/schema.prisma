@@ -27,8 +27,8 @@ model User {
 model Course {
   id          Int          @id @default(autoincrement())
   name        String
+  issue       String?      @db.Text
   description String?      @db.Text
-  duration    Int
   price       Int
   active      Boolean      @default(false)
   categoryId  Int          @map("category_id")

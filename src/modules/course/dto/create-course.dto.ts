@@ -19,19 +19,19 @@ export class CreateCourseDto {
   })
   public description: string;
 
+  @IsString()
+  @ApiProperty({
+    description: 'Main issue that the course solves',
+    example: 'Course issue',
+  })
+  public issue: string;
+
   @IsNumber()
   @ApiProperty({
     description: 'The price of the course (in cents)',
     example: 0,
   })
   public price: number;
-
-  @IsNumber()
-  @ApiProperty({
-    description: 'The duration of the course (in hours)',
-    example: 0,
-  })
-  public duration: number;
 
   @IsNumber()
   @ApiProperty({
