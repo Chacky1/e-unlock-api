@@ -67,7 +67,7 @@ export class CategoryService {
 
   public async create(
     category: CreateCategoryDto,
-    image: Express.Multer.File,
+    image?: Express.Multer.File,
   ): Promise<Category> {
     if (!image) {
       return await this.categoryRepository.create(category);

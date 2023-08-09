@@ -57,9 +57,15 @@ export class CourseRepository {
     return course;
   }
 
-  public async create(createCourseDto: CreateCourseDto): Promise<Course> {
+  public async create(
+    createCourseDto: CreateCourseDto,
+    imagePath?: string,
+  ): Promise<Course> {
     const course = await this.databaseService.course.create({
-      data: createCourseDto,
+      data: {
+        ...createCourseDto,
+        imageUrl: imagePath,
+      },
     });
 
     return course;

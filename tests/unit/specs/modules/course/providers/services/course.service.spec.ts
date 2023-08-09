@@ -2,6 +2,7 @@ import { Test } from '@nestjs/testing';
 import { CourseRepository } from '../../../../../../../src/modules/course/providers/repositories/course.repository';
 import { CourseService } from '../../../../../../../src/modules/course/providers/services/course.service';
 import { createFakeCourseDto } from '../../../../../../factories/course/dto/create-course/create-course.dto.factory';
+import { StorageService } from '../../../../../../../src/modules/config/cloud/providers/services/storage.service';
 
 describe('Course Service', () => {
   let service;
@@ -18,6 +19,7 @@ describe('Course Service', () => {
     const module = await Test.createTestingModule({
       providers: [
         CourseService,
+        StorageService,
         {
           provide: CourseRepository,
           useValue: courseRepositoryMock,

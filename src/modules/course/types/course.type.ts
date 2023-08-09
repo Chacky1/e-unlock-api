@@ -47,6 +47,13 @@ export class Course {
 
   @IsReadOnly()
   @ApiProperty({
+    description: 'The image public URL of the course',
+    example: 'https://example.com/image.png',
+  })
+  public image?: string;
+
+  @IsReadOnly()
+  @ApiProperty({
     description: 'The creation date of the course',
     type: 'string',
     format: 'date-time',

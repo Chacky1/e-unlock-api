@@ -5,15 +5,27 @@ import {
   NotFoundException,
   Param,
   Post,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
+import { tmpdir } from 'os';
 import { CreateCourseDto } from '../dto/create-course.dto';
 import { CourseService } from '../providers/services/course.service';
-import { ApiCreatedResponse, ApiOkResponse, ApiParam } from '@nestjs/swagger';
+import {
+  ApiConsumes,
+  ApiCreatedResponse,
+  ApiOkResponse,
+  ApiParam,
+} from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
 import { Scope } from '../../../shared/auth/decorator/scope.decorator';
 import { ScopeGuard } from '../../../shared/auth/providers/guards/scope.guard';
 import { Course, CourseWithSections } from '../types/course.type';
+import { ErrorsInterceptor } from '../providers/interceptors/errors.interceptor';
+import { FileInterceptor } from '@nestjs/platform-express';
+
+const UPLOAD_FILE_PATH = `${tmpdir()}/courses/uploads`;
 
 @Controller('courses')
 export class CourseController {
@@ -48,12 +60,20 @@ export class CourseController {
   }
 
   @Post()
+  @UseInterceptors(
+    ErrorsInterceptor,
+    FileInterceptor('image', { dest: UPLOAD_FILE_PATH }),
+  )
   @UseGuards(AuthGuard('jwt'), ScopeGuard)
   @Scope('add:courses')
   @ApiCreatedResponse({
     type: CreateCourseDto,
   })
-  public async create(@Body() createCourseDto: CreateCourseDto) {
-    return await this.courseService.create(createCourseDto);
+  @ApiConsumes('multipart/form-data')
+  public async create(
+    @Body() createCourseDto: CreateCourseDto,
+    @UploadedFile() image: Express.Multer.File,
+  ) {
+    return await this.courseService.create(createCourseDto, image);
   }
 }
