@@ -6,13 +6,15 @@ import { CloudModule } from './modules/config/cloud/cloud.module';
 import { JwtStrategy } from './shared/auth/providers/strategies/jwt.strategy';
 import { PassportModule } from '@nestjs/passport';
 import { ScopeGuard } from './shared/auth/providers/guards/scope.guard';
+import { UserModule } from './modules/user/user.module';
 
 @Module({
   imports: [
     DatabaseModule,
-    CourseModule,
     CloudModule,
     PassportModule.register({ defaultStrategy: 'jwt' }),
+    CourseModule,
+    UserModule,
   ],
   controllers: [AppController],
   providers: [JwtStrategy, ScopeGuard],
