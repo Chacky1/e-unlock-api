@@ -10,7 +10,7 @@ const { PORT } = process.env;
 const SWAGGER_PATH = 'swagger';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, { rawBody: true });
   app.useGlobalPipes(new ValidationPipe(validationPipeDefaultOptions));
 
   const databaseService = app.get(DatabaseService);

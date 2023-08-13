@@ -6,10 +6,11 @@ import { DatabaseModule } from '../config/database/database.module';
 import { CourseService } from '../course/providers/services/course.service';
 import { CourseRepository } from '../course/providers/repositories/course.repository';
 import { CloudModule } from '../config/cloud/cloud.module';
+import { UserWebhookController } from './controllers/webhook.controller';
 
 @Module({
   imports: [DatabaseModule, CloudModule],
-  controllers: [UserController],
+  controllers: [UserController, UserWebhookController],
   providers: [UserService, UserRepository, CourseService, CourseRepository],
 })
 export class UserModule {}
