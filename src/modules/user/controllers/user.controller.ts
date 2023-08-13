@@ -25,15 +25,15 @@ import { Scope } from '../../../shared/auth/decorator/scope.decorator';
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @Get(':id')
-  @ApiParam({ name: 'id', type: Number })
+  @Get(':code')
+  @ApiParam({ name: 'code', type: String })
   @UseGuards(AuthGuard('jwt'), ScopeGuard)
   @Scope('read:users')
   @ApiOkResponse({
     type: User,
   })
-  public async findOne(@Param('id') id: number) {
-    const user = await this.userService.findOne(+id);
+  public async findOne(@Param('code') code: string) {
+    const user = await this.userService.findOne(code);
 
     if (!user) {
       throw new NotFoundException('User not found.');
@@ -52,17 +52,17 @@ export class UserController {
     return await this.userService.create(user);
   }
 
-  @Post(':userId/courses/:courseId')
+  @Post(':userCode/courses/:courseId')
   @UseGuards(AuthGuard('jwt'), ScopeGuard)
   @Scope('add:users.courses')
   @ApiNoContentResponse()
-  @ApiParam({ name: 'userId', type: Number })
+  @ApiParam({ name: 'userCode', type: String })
   @ApiParam({ name: 'courseId', type: Number })
   @HttpCode(204)
   public async addCourse(
-    @Param('userId') userId: number,
+    @Param('userCode') userCode: string,
     @Param('courseId') courseId: number,
   ) {
-    await this.userService.addCourse(+userId, +courseId);
+    await this.userService.addCourse(userCode, +courseId);
   }
 }

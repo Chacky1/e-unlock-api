@@ -38,17 +38,17 @@ describe('UserService', () => {
 
   describe('findOne', () => {
     it('should return a user when called.', async () => {
-      const userId = 1;
+      const userCode = 'user_1';
 
-      await service.findOne(userId);
+      await service.findOne(userCode);
 
-      expect(repository.findOne).toHaveBeenCalledWith(userId);
+      expect(repository.findOne).toHaveBeenCalledWith(userCode);
     });
 
     it('should return undefined if user does not exist.', async () => {
-      const userId = 999;
+      const userCode = 'user_undefined';
 
-      await expect(service.findOne(userId)).resolves.toBeUndefined();
+      await expect(service.findOne(userCode)).resolves.toBeUndefined();
     });
   });
 
@@ -64,12 +64,12 @@ describe('UserService', () => {
 
   describe('addCourse', () => {
     it('should add a course to a user when called.', async () => {
-      const userId = 1;
+      const userCode = 'user_1';
       const courseId = 1;
 
-      await service.addCourse(userId, courseId);
+      await service.addCourse(userCode, courseId);
 
-      expect(repository.addCourse).toHaveBeenCalledWith(userId, courseId);
+      expect(repository.addCourse).toHaveBeenCalledWith(userCode, courseId);
     });
   });
 });

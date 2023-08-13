@@ -14,8 +14,8 @@ import { createFakeCategoryDto } from '../../../../../factories/course/dto/creat
 describe('User Controller', () => {
   let app: INestApplication;
   let accessToken: string;
-  let existingUserId: number;
-  const unknownUserId = 999;
+  let existingUserCode: string;
+  const unknownUserCode = 'unknown_user_code';
 
   beforeAll(async () => {
     accessToken = await fetchAccessToken();
@@ -38,24 +38,24 @@ describe('User Controller', () => {
       .set('Authorization', `Bearer ${accessToken}`)
       .send(fakeUser);
 
-    existingUserId = userResponse.body.id;
+    existingUserCode = userResponse.body.code;
   });
 
   afterAll(async () => {
     await app.close();
   });
 
-  describe('GET /users/:id', () => {
+  describe('GET /users/:code', () => {
     it('should return a user when called.', async () => {
       await request(app.getHttpServer())
-        .get(`/users/${existingUserId}`)
+        .get(`/users/${existingUserCode}`)
         .set('Authorization', `Bearer ${accessToken}`)
         .expect(HttpStatus.OK);
     });
 
     it('should return 404 when called with an unknown id.', async () => {
       await request(app.getHttpServer())
-        .get(`/users/${unknownUserId}`)
+        .get(`/users/${unknownUserCode}`)
         .set('Authorization', `Bearer ${accessToken}`)
         .expect(HttpStatus.NOT_FOUND);
     });
@@ -92,7 +92,7 @@ describe('User Controller', () => {
         .send(fakeCourse);
 
       await request(app.getHttpServer())
-        .post(`/users/${existingUserId}/courses/${courseResponse.body.id}`)
+        .post(`/users/${existingUserCode}/courses/${courseResponse.body.id}`)
         .set('Authorization', `Bearer ${accessToken}`)
         .send()
         .expect(HttpStatus.NO_CONTENT);

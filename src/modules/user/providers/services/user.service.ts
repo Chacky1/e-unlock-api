@@ -10,8 +10,8 @@ export class UserService {
     private readonly courseService: CourseService,
   ) {}
 
-  public async findOne(id: number) {
-    const user = await this.userRepository.findOne(id);
+  public async findOne(code: string) {
+    const user = await this.userRepository.findOne(code);
 
     if (!user) {
       return undefined;
@@ -38,7 +38,7 @@ export class UserService {
     return await this.userRepository.create(user);
   }
 
-  public async addCourse(userId: number, courseId: number) {
-    return await this.userRepository.addCourse(userId, courseId);
+  public async addCourse(userCode: string, courseId: number) {
+    return await this.userRepository.addCourse(userCode, courseId);
   }
 }
