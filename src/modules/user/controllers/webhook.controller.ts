@@ -27,6 +27,9 @@ export class UserWebhookController {
     const payload = request.rawBody.toString('utf8');
     const headers = request.headers as WebhookHeaders;
 
+    console.log('payload', payload);
+    console.log('headers', headers);
+
     try {
       const clerkUserDetails = webhook.verify(
         payload,
@@ -42,7 +45,7 @@ export class UserWebhookController {
         lastName: clerkUserDetails.last_name,
       });
     } catch (err) {
-      throw new InternalServerErrorException(err);
+      throw new InternalServerErrorException(err.message);
     }
   }
 }
