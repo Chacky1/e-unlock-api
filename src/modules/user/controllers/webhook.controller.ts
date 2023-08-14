@@ -27,14 +27,14 @@ export class UserWebhookController {
     const payload = request.rawBody.toString('utf8');
     const headers = request.headers as WebhookHeaders;
 
-    console.log('payload', payload);
-    console.log('headers', headers);
-
     try {
-      const clerkUserDetails = webhook.verify(
-        payload,
-        headers,
-      ) as CreateClerkUserDto;
+      // Verify the webhook payload
+      // Real usable data is embedded in the payload.data property
+      const payloadData = webhook.verify(payload, headers) as {
+        data: CreateClerkUserDto;
+      };
+
+      const clerkUserDetails = payloadData.data;
 
       // Clerk allows multiple email addresses,
       // but we only use the first one since at creation time new user only has one email address
