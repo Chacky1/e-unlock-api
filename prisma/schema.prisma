@@ -27,10 +27,13 @@ model User {
 model Course {
   id          Int          @id @default(autoincrement())
   name        String
+  slug        String
   issue       String?      @db.Text
   description String?      @db.Text
+  solution    String?      @db.Text
   price       Int
   imageUrl    String?      @map("image_url")
+  videoUrl    String?      @map("video_url")
   active      Boolean      @default(false)
   categoryId  Int          @map("category_id")
   createdAt   DateTime     @default(now()) @map("created_at")

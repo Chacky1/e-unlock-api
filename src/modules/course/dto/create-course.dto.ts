@@ -27,6 +27,13 @@ export class CreateCourseDto {
   })
   public issue: string;
 
+  @IsString()
+  @ApiProperty({
+    description: 'Solution that course offers',
+    example: 'Course solution',
+  })
+  public solution: string;
+
   @Transform(({ value }) => Number(value))
   @IsNumber()
   @ApiProperty({

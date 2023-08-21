@@ -23,9 +23,9 @@ export class CourseService {
       return undefined;
     }
 
-    const coursesWithImages = await this.makeCoursesWithImages(courses);
+    const coursesWithAssets = await this.makeCoursesWithAssets(courses);
 
-    return coursesWithImages;
+    return coursesWithAssets;
   }
 
   public async search(search: CourseSearch) {
@@ -35,9 +35,9 @@ export class CourseService {
       return undefined;
     }
 
-    const coursesWithImages = await this.makeCoursesWithImages(courses);
+    const coursesWithAssets = await this.makeCoursesWithAssets(courses);
 
-    return coursesWithImages;
+    return coursesWithAssets;
   }
 
   public async findOne(id: number) {
@@ -51,56 +51,88 @@ export class CourseService {
       return course;
     }
 
-    const courseWithImage = await this.makeCourseWithImage(course);
+    const courseWithAssets = await this.makeCourseWithAssets(course);
 
-    return courseWithImage;
+    return courseWithAssets;
   }
 
-  public async create(course: CreateCourseDto, image?: Express.Multer.File) {
-    if (!image) {
-      return await this.courseRepository.create(course);
+  public async create(
+    course: CreateCourseDto,
+    image?: Express.Multer.File,
+    video?: Express.Multer.File,
+  ) {
+    let uploadedImage = null;
+
+    if (image) {
+      uploadedImage = await this.storageService.upload(
+        CLOUD_STORAGE_BUCKET_NAME,
+        CLOUD_STORAGE_COURSES_FOLDER,
+        image,
+      );
     }
 
-    const uploadedImage = await this.storageService.upload(
-      CLOUD_STORAGE_BUCKET_NAME,
-      CLOUD_STORAGE_COURSES_FOLDER,
-      image,
-    );
+    let uploadedVideo = null;
 
-    return await this.courseRepository.create(course, uploadedImage.path);
+    if (video) {
+      uploadedVideo = await this.storageService.upload(
+        CLOUD_STORAGE_BUCKET_NAME,
+        CLOUD_STORAGE_COURSES_FOLDER,
+        video,
+      );
+    }
+
+    return await this.courseRepository.create(
+      course,
+      uploadedImage?.path || undefined,
+      uploadedVideo?.path || undefined,
+    );
   }
 
-  private async makeCoursesWithImages(
+  private async makeCoursesWithAssets(
     courses: PrismaCourse[],
   ): Promise<Course[]> {
-    const coursesWithImages: Course[] = [];
-    for (const course of courses) {
-      if (!course.imageUrl) {
-        coursesWithImages.push(course);
-        continue;
-      }
+    const coursesWithAssets: Course[] = [];
 
-      const courseWithImage = await this.makeCourseWithImage(course);
-      coursesWithImages.push(courseWithImage);
+    for (const course of courses) {
+      const courseWithAssets = await this.makeCourseWithAssets(course);
+      coursesWithAssets.push(courseWithAssets);
     }
 
-    return coursesWithImages;
+    return coursesWithAssets;
   }
 
-  private async makeCourseWithImage(course: PrismaCourse): Promise<Course> {
-    if (!course.imageUrl) {
+  private async makeCourseWithAssets(course: PrismaCourse): Promise<Course> {
+    if (!course.imageUrl && !course.videoUrl) {
       return course;
     }
 
-    const [courseImage] = await this.storageService.resolveSignedUrl(
-      CLOUD_STORAGE_BUCKET_NAME,
-      course.imageUrl,
-    );
-
-    return {
+    const courseWithAsset: Course = {
       ...course,
-      image: courseImage,
     };
+
+    let courseImage = null;
+
+    if (course.imageUrl) {
+      [courseImage] = await this.storageService.resolveSignedUrl(
+        CLOUD_STORAGE_BUCKET_NAME,
+        course.imageUrl,
+      );
+
+      courseWithAsset.image = courseImage;
+    }
+
+    let courseVideo = null;
+
+    if (course.videoUrl) {
+      [courseVideo] = await this.storageService.resolveSignedUrl(
+        CLOUD_STORAGE_BUCKET_NAME,
+        course.videoUrl,
+      );
+
+      courseWithAsset.video = courseVideo;
+    }
+
+    return courseWithAsset;
   }
 }
 

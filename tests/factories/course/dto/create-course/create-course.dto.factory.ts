@@ -14,6 +14,7 @@ export const createFakeCourseDto = (
       max: 100000,
     }),
   issue: course.issue ?? faker.lorem.sentence(),
+  solution: course.solution ?? faker.lorem.sentence(),
   categoryId: course.categoryId ?? faker.number.int(),
   ...override,
 });
