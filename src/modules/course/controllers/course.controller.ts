@@ -5,7 +5,7 @@ import {
   NotFoundException,
   Param,
   Post,
-  UploadedFile,
+  UploadedFiles,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
@@ -23,7 +23,7 @@ import { Scope } from '../../../shared/auth/decorator/scope.decorator';
 import { ScopeGuard } from '../../../shared/auth/providers/guards/scope.guard';
 import { Course, CourseWithSections } from '../types/course.type';
 import { ErrorsInterceptor } from '../providers/interceptors/errors.interceptor';
-import { FileInterceptor } from '@nestjs/platform-express';
+import { FileFieldsInterceptor } from '@nestjs/platform-express';
 
 const UPLOAD_FILE_PATH = `${tmpdir()}/courses/uploads`;
 
@@ -62,7 +62,15 @@ export class CourseController {
   @Post()
   @UseInterceptors(
     ErrorsInterceptor,
-    FileInterceptor('image', { dest: UPLOAD_FILE_PATH }),
+    FileFieldsInterceptor(
+      [
+        { name: 'image', maxCount: 1 },
+        { name: 'video', maxCount: 1 },
+      ],
+      {
+        dest: UPLOAD_FILE_PATH,
+      },
+    ),
   )
   @UseGuards(AuthGuard('jwt'), ScopeGuard)
   @Scope('add:courses')
@@ -72,8 +80,13 @@ export class CourseController {
   @ApiConsumes('multipart/form-data')
   public async create(
     @Body() createCourseDto: CreateCourseDto,
-    @UploadedFile() image: Express.Multer.File,
+    @UploadedFiles()
+    files: { image?: Express.Multer.File[]; video?: Express.Multer.File[] },
   ) {
-    return await this.courseService.create(createCourseDto, image);
+    return await this.courseService.create(
+      createCourseDto,
+      files?.image[0] || undefined,
+      files?.video[0] || undefined,
+    );
   }
 }

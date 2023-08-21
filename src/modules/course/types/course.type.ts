@@ -19,6 +19,13 @@ export class Course {
 
   @IsReadOnly()
   @ApiProperty({
+    description: 'The slug name of the course',
+    example: 'course-name',
+  })
+  public slug: string;
+
+  @IsReadOnly()
+  @ApiProperty({
     description: 'The description of the course',
     example: 'Course description',
   })
@@ -30,6 +37,13 @@ export class Course {
     example: 'Course issue',
   })
   public issue: string;
+
+  @IsReadOnly()
+  @ApiProperty({
+    description: 'Solution that course offers',
+    example: 'Course solution',
+  })
+  public solution: string;
 
   @IsReadOnly()
   @ApiProperty({
@@ -51,6 +65,13 @@ export class Course {
     example: 'https://example.com/image.png',
   })
   public image?: string;
+
+  @IsReadOnly()
+  @ApiProperty({
+    description: 'The video public URL of the course',
+    example: 'https://example.com/video.png',
+  })
+  public video?: string;
 
   @IsReadOnly()
   @ApiProperty({

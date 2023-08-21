@@ -4,6 +4,7 @@ import { DatabaseService } from '../../../config/database/providers/services/dat
 import { CreateCourseDto } from '../../dto/create-course.dto';
 import { CourseSearch } from '../services/course.service';
 import { ResourceNotFoundError } from '../../../../shared/error/types/resource-not-found.error';
+import { slugify } from '../../../../shared/utils';
 
 @Injectable()
 export class CourseRepository {
@@ -60,11 +61,14 @@ export class CourseRepository {
   public async create(
     createCourseDto: CreateCourseDto,
     imagePath?: string,
+    videoPath?: string,
   ): Promise<Course> {
     const course = await this.databaseService.course.create({
       data: {
         ...createCourseDto,
+        slug: slugify(createCourseDto.name),
         imageUrl: imagePath,
+        videoUrl: videoPath,
       },
     });
 
