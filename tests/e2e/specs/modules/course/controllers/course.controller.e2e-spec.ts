@@ -111,11 +111,13 @@ describe('Course Controller (e2e)', () => {
         .post('/courses')
         .set('Authorization', `Bearer ${accessToken}`)
         .attach('image', `${process.cwd()}/tests/e2e/assets/test-image.png`)
+        .attach('video', `${process.cwd()}/tests/e2e/assets/test-video.mp4`)
         .field('name', toCreateCourse.name)
         .field('description', toCreateCourse.description)
         .field('categoryId', toCreateCourse.categoryId)
         .field('price', toCreateCourse.price)
         .field('issue', toCreateCourse.issue)
+        .field('solution', toCreateCourse.solution)
         .expect(HttpStatus.CREATED);
     });
   });
