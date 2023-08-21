@@ -27,6 +27,7 @@ model User {
 model Course {
   id          Int          @id @default(autoincrement())
   name        String
+  slug        String
   issue       String?      @db.Text
   description String?      @db.Text
   solution    String?      @db.Text
