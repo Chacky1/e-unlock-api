@@ -83,10 +83,13 @@ export class CourseController {
     @UploadedFiles()
     files: { image?: Express.Multer.File[]; video?: Express.Multer.File[] },
   ) {
+    const image = files?.image ? files.image[0] : undefined;
+    const video = files?.video ? files.video[0] : undefined;
+
     return await this.courseService.create(
       createCourseDto,
-      files?.image[0] || undefined,
-      files?.video[0] || undefined,
+      image || undefined,
+      video || undefined,
     );
   }
 }
