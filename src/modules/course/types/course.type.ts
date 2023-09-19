@@ -1,6 +1,7 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { IsReadOnly } from '../../../shared/decorators/readonly.decorators';
 import { SectionWithLessons } from './section.type';
+import { IsOptional, IsString } from 'class-validator';
 
 export class Course {
   @IsReadOnly()
@@ -100,4 +101,14 @@ export class CourseWithSections extends Course {
     isArray: true,
   })
   public sections: SectionWithLessons[];
+}
+
+export class CourseQuerySearch {
+  @IsString()
+  @IsOptional()
+  @ApiPropertyOptional({
+    description: 'The slug of the course',
+    example: 'Course slug',
+  })
+  public slug?: string;
 }

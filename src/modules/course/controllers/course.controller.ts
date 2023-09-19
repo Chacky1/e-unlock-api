@@ -5,6 +5,7 @@ import {
   NotFoundException,
   Param,
   Post,
+  Query,
   UploadedFiles,
   UseGuards,
   UseInterceptors,
@@ -21,7 +22,11 @@ import {
 import { AuthGuard } from '@nestjs/passport';
 import { Scope } from '../../../shared/auth/decorator/scope.decorator';
 import { ScopeGuard } from '../../../shared/auth/providers/guards/scope.guard';
-import { Course, CourseWithSections } from '../types/course.type';
+import {
+  Course,
+  CourseQuerySearch,
+  CourseWithSections,
+} from '../types/course.type';
 import { ErrorsInterceptor } from '../providers/interceptors/errors.interceptor';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 
@@ -38,8 +43,10 @@ export class CourseController {
     type: Course,
     isArray: true,
   })
-  public async findAll() {
-    return await this.courseService.findAll();
+  public async findAll(@Query() query: CourseQuerySearch) {
+    return await this.courseService.search({
+      slug: query.slug,
+    });
   }
 
   @Get(':id')

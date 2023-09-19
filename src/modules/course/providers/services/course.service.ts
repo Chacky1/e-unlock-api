@@ -3,7 +3,7 @@ import { CourseRepository } from '../repositories/course.repository';
 import { CreateCourseDto } from '../../dto/create-course.dto';
 import { StorageService } from '../../../config/cloud/providers/services/storage.service';
 import { Course as PrismaCourse } from '@prisma/client';
-import { Course } from '../../types/course.type';
+import { Course, CourseQuerySearch } from '../../types/course.type';
 
 const { CLOUD_STORAGE_BUCKET_NAME } = process.env;
 
@@ -15,18 +15,6 @@ export class CourseService {
     private readonly courseRepository: CourseRepository,
     private readonly storageService: StorageService,
   ) {}
-
-  public async findAll() {
-    const courses = await this.courseRepository.findAll();
-
-    if (!courses) {
-      return undefined;
-    }
-
-    const coursesWithAssets = await this.makeCoursesWithAssets(courses);
-
-    return coursesWithAssets;
-  }
 
   public async search(search: CourseSearch) {
     const courses = await this.courseRepository.search(search);
@@ -139,6 +127,7 @@ export class CourseService {
 export interface CourseSearch {
   id?: number;
   name?: string;
+  slug?: string;
   description?: string;
   categoryId?: number;
 }

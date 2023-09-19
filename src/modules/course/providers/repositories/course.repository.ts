@@ -33,6 +33,7 @@ export class CourseRepository {
       where: {
         id: search.id ?? undefined,
         name: search.name ?? undefined,
+        slug: search.slug ?? undefined,
         description: search.description ?? undefined,
         categoryId: search.categoryId ?? undefined,
       },

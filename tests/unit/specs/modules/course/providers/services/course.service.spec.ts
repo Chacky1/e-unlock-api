@@ -9,7 +9,6 @@ describe('Course Service', () => {
   let repository;
 
   const courseRepositoryMock = {
-    findAll: jest.fn(),
     findOne: jest.fn(),
     search: jest.fn(),
     create: jest.fn(),
@@ -29,14 +28,6 @@ describe('Course Service', () => {
 
     service = module.get<CourseService>(CourseService);
     repository = module.get<CourseRepository>(CourseRepository);
-  });
-
-  describe('findAll', () => {
-    it('should return all courses when called.', async () => {
-      await service.findAll();
-
-      expect(repository.findAll).toHaveBeenCalled();
-    });
   });
 
   describe('search', () => {
