@@ -20,6 +20,7 @@ model User {
   updatedAt DateTime     @updatedAt @map("updated_at")
   deletedAt DateTime?    @map("deleted_at")
   courses   UserCourse[]
+  orders    Order[]
 
   @@map("users")
 }
@@ -42,6 +43,7 @@ model Course {
   users       UserCourse[]
   sections    Section[]
   category    Category     @relation(fields: [categoryId], references: [id])
+  orders      Order[]
 
   @@map("courses")
 }
@@ -102,4 +104,18 @@ model Category {
   courses     Course[]
 
   @@map("categories")
+}
+
+model Order {
+  id          Int       @id @default(autoincrement())
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+  deletedAt   DateTime? @map("deleted_at")
+  user        User      @relation(fields: [userId], references: [id])
+  userId      Int       @map("user_id")
+  course      Course    @relation(fields: [courseId], references: [id])
+  courseId    Int       @map("course_id")
+  status      String
+
+  @@map("orders")
 }
