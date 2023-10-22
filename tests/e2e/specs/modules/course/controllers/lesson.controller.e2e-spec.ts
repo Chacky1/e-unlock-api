@@ -1,4 +1,5 @@
 import { INestApplication, HttpStatus } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 import { TestingModule, Test } from '@nestjs/testing';
 import * as request from 'supertest';
 import { CourseModule } from '../../../../../../src/modules/course/course.module';
@@ -27,7 +28,7 @@ describe('Lesson Controller', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [CourseModule],
+      imports: [ConfigModule.forRoot({ isGlobal: true }), CourseModule],
       providers: [JwtStrategy, ScopeGuard],
     }).compile();
 
