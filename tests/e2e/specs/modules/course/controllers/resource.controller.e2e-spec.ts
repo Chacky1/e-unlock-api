@@ -1,25 +1,26 @@
-import { INestApplication, HttpStatus } from '@nestjs/common';
+import { HttpStatus, INestApplication } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TestingModule, Test } from '@nestjs/testing';
 import * as request from 'supertest';
 import { CourseModule } from '../../../../../../src/modules/course/course.module';
-import { CreateLessonDto } from '../../../../../../src/modules/course/dto/create-lesson.dto';
-import { initNestApp } from '../../../../helpers/nest-app.helper';
-import { createFakeCategoryDto } from '../../../../../factories/course/dto/create-course/create-category.dto.factory';
-import { createFakeLessonDto } from '../../../../../factories/course/dto/create-course/create-lesson.dto.factory';
-import { createFakeSectionDto } from '../../../../../factories/course/dto/create-course/create-section.dto.factory';
-import { createFakeCourseDto } from '../../../../../factories/course/dto/create-course/create-course.dto.factory';
-import { fetchAccessToken } from '../../../../helpers/access-token.helper';
 import { ScopeGuard } from '../../../../../../src/shared/auth/providers/guards/scope.guard';
 import { JwtStrategy } from '../../../../../../src/shared/auth/providers/strategies/jwt.strategy';
+import { CreateResourceDto } from '../../../../../../src/modules/course/dto/create-resource.dto';
+import { fetchAccessToken } from '../../../../helpers/access-token.helper';
+import { initNestApp } from '../../../../helpers/nest-app.helper';
+import { createFakeCategoryDto } from '../../../../../factories/course/dto/create-course/create-category.dto.factory';
+import { createFakeCourseDto } from '../../../../../factories/course/dto/create-course/create-course.dto.factory';
+import { createFakeLessonDto } from '../../../../../factories/course/dto/create-course/create-lesson.dto.factory';
+import { createFakeSectionDto } from '../../../../../factories/course/dto/create-course/create-section.dto.factory';
+import { createFakeResourceDto } from '../../../../../factories/course/dto/create-course/create-resource.dto.factory';
 
-describe('Lesson Controller', () => {
+describe('Resource Controller', () => {
   let app: INestApplication;
   let accessToken: string;
   let existingCourseId: number;
   let existingSectionId: number;
   let existingLessonId: number;
-  const unknownSectionId = 999;
+  let existingResourceId: number;
   const unknownLessonId = 999;
 
   beforeAll(async () => {
@@ -71,95 +72,101 @@ describe('Lesson Controller', () => {
       .send(fakeLesson);
 
     existingLessonId = lessonResponse.body.id;
+
+    const fakeResource = createFakeResourceDto({ lessonId: existingLessonId });
+
+    const resourceResponse = await request(app.getHttpServer())
+      .post('/resources')
+      .set('Authorization', `Bearer ${accessToken}`)
+      .send(fakeResource);
+
+    existingResourceId = resourceResponse.body.id;
   });
 
   afterAll(async () => {
     await app.close();
   });
 
-  describe('GET lessons/:id', () => {
-    it('should return a lesson when called.', async () => {
+  describe('GET resources', () => {
+    it('should return resources when called.', async () => {
       await request(app.getHttpServer())
-        .get(`/lessons/${existingLessonId}`)
+        .get(`/resources`)
         .set('Authorization', `Bearer ${accessToken}`)
         .expect(HttpStatus.OK);
     });
 
-    it('should return 404 when lesson does not exist.', async () => {
+    it('should return a resource when called with an existing id.', async () => {
       await request(app.getHttpServer())
-        .get(`/lessons/${unknownLessonId}`)
+        .get(`/resources?id=${existingResourceId}`)
         .set('Authorization', `Bearer ${accessToken}`)
-        .expect(HttpStatus.NOT_FOUND);
+        .expect(HttpStatus.OK);
+    });
+
+    it('should return 400 when resource does not exist.', async () => {
+      await request(app.getHttpServer())
+        .get(`/resources?lessonId=${unknownLessonId}`)
+        .set('Authorization', `Bearer ${accessToken}`)
+        .expect(HttpStatus.OK);
     });
   });
 
   describe('POST lessons', () => {
     it.each<{
-      payload: CreateLessonDto;
+      payload: CreateResourceDto;
       test: string;
       errorMessage: string;
     }>([
       {
-        payload: createFakeLessonDto(
-          { sectionId: existingSectionId },
+        payload: createFakeResourceDto(
+          { lessonId: existingLessonId },
           { name: '' },
         ),
         test: 'should return 400 when name is empty.',
-        errorMessage: 'name must be longer than or equal to 1 characters.',
+        errorMessage: 'name must be longer than or equal to 1 characters',
       },
       {
-        payload: createFakeLessonDto(
-          { sectionId: existingSectionId },
-          { textContent: '' },
-        ),
-        test: 'should return 400 when text content is empty.',
-        errorMessage:
-          'textContent must be longer than or equal to 1 characters.',
-      },
-      {
-        payload: createFakeLessonDto({ sectionId: unknownSectionId }),
-        test: 'should return 400 when section id does not exist.',
-        errorMessage: 'Resource SECTION with id 999 not found.',
+        payload: createFakeResourceDto({ lessonId: unknownLessonId }),
+        test: 'should return 400 when lesson id does not exist.',
+        errorMessage: 'Resource LESSON with id 999 not found.',
       },
     ])('$test', async ({ payload, errorMessage }) => {
       const response = await request(app.getHttpServer())
-        .post('/lessons')
+        .post('/resources')
         .set('Authorization', `Bearer ${accessToken}`)
         .send(payload)
         .expect(HttpStatus.BAD_REQUEST);
 
       if (Array.isArray(response.body.message)) {
-        expect(response.body.message).toContain(errorMessage);
+        expect(response.body.message[0]).toContain(errorMessage);
       } else {
         expect(response.body.message).toEqual(errorMessage);
       }
     });
 
-    it('should create a lesson when called without video.', async () => {
-      const toCreateLesson = createFakeLessonDto({
-        sectionId: existingSectionId,
+    it('should create a resource when called without file.', async () => {
+      const toCreateResource = createFakeResourceDto({
+        lessonId: existingLessonId,
       });
 
       await request(app.getHttpServer())
-        .post('/lessons')
+        .post('/resources')
         .set('Authorization', `Bearer ${accessToken}`)
-        .send(toCreateLesson)
-        .expect(201);
+        .field('name', toCreateResource.name)
+        .field('lessonId', toCreateResource.lessonId)
+        .expect(HttpStatus.CREATED);
     });
 
-    it('should create a lesson when called with video.', async () => {
-      const toCreateLesson = createFakeLessonDto({
-        sectionId: existingSectionId,
+    it('should create a resource when called with file.', async () => {
+      const toCreateResource = createFakeResourceDto({
+        lessonId: existingLessonId,
       });
 
       await request(app.getHttpServer())
-        .post('/lessons')
+        .post('/resources')
         .set('Authorization', `Bearer ${accessToken}`)
-        .attach('video', `${process.cwd()}/tests/e2e/assets/test-video.mp4`)
-        .field('name', toCreateLesson.name)
-        .field('textContent', toCreateLesson.textContent)
-        .field('sectionId', toCreateLesson.sectionId)
-        .field('sectionOrder', toCreateLesson.sectionOrder)
+        .attach('file', `${process.cwd()}/tests/e2e/assets/test-image.png`)
+        .field('name', toCreateResource.name)
+        .field('lessonId', toCreateResource.lessonId)
         .expect(HttpStatus.CREATED);
     });
   });

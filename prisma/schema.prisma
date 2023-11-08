@@ -79,17 +79,18 @@ model Section {
 }
 
 model Lesson {
-  id           Int       @id @default(autoincrement())
+  id           Int        @id @default(autoincrement())
   name         String
-  textContent  String?   @map("text_content") @db.Text
-  active       Boolean   @default(false)
-  sectionOrder Int       @map("section_order")
-  videoUrl     String?   @map("video_url")
-  createdAt    DateTime  @default(now()) @map("created_at")
-  updatedAt    DateTime  @updatedAt @map("updated_at")
-  publishedAt  DateTime? @map("published_at")
-  section      Section   @relation(fields: [sectionId], references: [id])
-  sectionId    Int       @map("section_id")
+  textContent  String?    @map("text_content") @db.Text
+  active       Boolean    @default(false)
+  sectionOrder Int        @map("section_order")
+  videoUrl     String?    @map("video_url")
+  createdAt    DateTime   @default(now()) @map("created_at")
+  updatedAt    DateTime   @updatedAt @map("updated_at")
+  publishedAt  DateTime?  @map("published_at")
+  section      Section    @relation(fields: [sectionId], references: [id])
+  sectionId    Int        @map("section_id")
+  resources    Resource[]
 
   @@map("lessons")
 }
@@ -108,15 +109,27 @@ model Category {
 }
 
 model Order {
-  id          Int       @id @default(autoincrement())
-  createdAt   DateTime  @default(now()) @map("created_at")
-  updatedAt   DateTime  @updatedAt @map("updated_at")
-  deletedAt   DateTime? @map("deleted_at")
-  user        User      @relation(fields: [userId], references: [id])
-  userId      Int       @map("user_id")
-  course      Course    @relation(fields: [courseId], references: [id])
-  courseId    Int       @map("course_id")
-  status      String
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+  user      User      @relation(fields: [userId], references: [id])
+  userId    Int       @map("user_id")
+  course    Course    @relation(fields: [courseId], references: [id])
+  courseId  Int       @map("course_id")
+  status    String
 
   @@map("orders")
+}
+
+model Resource {
+  id        Int      @id @default(autoincrement())
+  name      String
+  url       String?
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  lessonId  Int      @map("lesson_id")
+  lesson    Lesson   @relation(fields: [lessonId], references: [id])
+
+  @@map("resources")
 }

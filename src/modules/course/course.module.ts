@@ -15,6 +15,9 @@ import { CloudModule } from '../config/cloud/cloud.module';
 import { CategoryController } from './controllers/category.controller';
 import { CategoryService } from './providers/services/category.service';
 import { CategoryRepository } from './providers/repositories/category.repository';
+import { ResourceController } from './controllers/resource.controller';
+import { ResourceService } from './providers/services/resource.service';
+import { ResourceRepository } from './providers/repositories/resource.repository';
 
 @Module({
   imports: [DatabaseModule, CloudModule],
@@ -23,16 +26,19 @@ import { CategoryRepository } from './providers/repositories/category.repository
     SectionController,
     LessonController,
     CategoryController,
+    ResourceController,
   ],
   providers: [
     CourseRepository,
     SectionRepository,
     LessonRepository,
     CategoryRepository,
+    ResourceRepository,
     CourseService,
     SectionService,
     LessonService,
     CategoryService,
+    ResourceService,
     {
       provide: APP_INTERCEPTOR,
       useClass: ErrorsInterceptor,
