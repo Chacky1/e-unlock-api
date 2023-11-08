@@ -1,6 +1,6 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
-import { IsString, IsNumber, MinLength } from 'class-validator';
+import { IsString, IsNumber, MinLength, IsOptional } from 'class-validator';
 
 export class CreateCourseDto {
   @IsString()
@@ -41,6 +41,14 @@ export class CreateCourseDto {
     example: 0,
   })
   public price: number;
+
+  @IsOptional()
+  @IsString()
+  @ApiPropertyOptional({
+    description: 'The price code of the course',
+    example: 'price_1O058fGtfE5rkMGLnjyDxKV8',
+  })
+  public priceCode?: string;
 
   @Transform(({ value }) => Number(value))
   @IsNumber()

@@ -3,7 +3,7 @@ import { CourseRepository } from '../repositories/course.repository';
 import { CreateCourseDto } from '../../dto/create-course.dto';
 import { StorageService } from '../../../config/cloud/providers/services/storage.service';
 import { Course as PrismaCourse } from '@prisma/client';
-import { Course, CourseQuerySearch } from '../../types/course.type';
+import { Course } from '../../types/course.type';
 
 const { CLOUD_STORAGE_BUCKET_NAME } = process.env;
 

@@ -55,6 +55,14 @@ export class Course {
 
   @IsReadOnly()
   @ApiProperty({
+    description: 'The price code of the course',
+    example: 'price_1O058fGtfE5rkMGLnjyDxKV8',
+    nullable: true,
+  })
+  public priceCode: string;
+
+  @IsReadOnly()
+  @ApiProperty({
     description: 'The category id of the course',
     example: 0,
   })
