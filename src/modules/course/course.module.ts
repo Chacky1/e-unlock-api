@@ -8,7 +8,7 @@ import { SectionService } from './providers/services/section.service';
 import { LessonService } from './providers/services/lesson.service';
 import { CourseController } from './controllers/course.controller';
 import { SectionController } from './controllers/section.controller';
-import { ErrorsInterceptor } from './providers/interceptors/errors.interceptor';
+import { ErrorsInterceptor } from '../../shared/interceptors/errors.interceptor';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { LessonController } from './controllers/lesson.controller';
 import { CloudModule } from '../config/cloud/cloud.module';

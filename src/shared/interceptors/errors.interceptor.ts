@@ -7,7 +7,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { Observable, catchError, throwError } from 'rxjs';
-import { ResourceNotFoundError } from '../../../../shared/error/types/resource-not-found.error';
+import { ResourceNotFoundError } from '../error/types/resource-not-found.error';
 
 @Injectable()
 export class ErrorsInterceptor implements NestInterceptor {
@@ -21,6 +21,16 @@ export class ErrorsInterceptor implements NestInterceptor {
         const requestMethod = request.method;
 
         if (error instanceof ResourceNotFoundError && requestMethod === 'GET') {
+          return throwError(() => {
+            const errorMessage = error.message;
+            return new NotFoundException(errorMessage);
+          });
+        }
+
+        if (
+          error instanceof ResourceNotFoundError &&
+          requestMethod === 'PATCH'
+        ) {
           return throwError(() => {
             const errorMessage = error.message;
             return new NotFoundException(errorMessage);

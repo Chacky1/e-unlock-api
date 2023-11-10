@@ -1,6 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { CreateOrderDto } from '../../dto/create-order.dto';
 import { DatabaseService } from '../../../config/database/providers/services/database.service';
+import { UpdateOrderDto } from '../../dto/update-order.dto';
+import { ResourceNotFoundError } from '../../../../shared/error/types/resource-not-found.error';
 
 @Injectable()
 export class OrderRepository {
@@ -29,5 +31,28 @@ export class OrderRepository {
     });
 
     return order;
+  }
+
+  public async update(orderId: number, updateOrderDto: UpdateOrderDto) {
+    const order = await this.databaseService.order.findUnique({
+      where: {
+        id: orderId,
+      },
+    });
+
+    if (!order) {
+      throw new ResourceNotFoundError('ORDER', `${orderId}`);
+    }
+
+    const updatedOrder = await this.databaseService.order.update({
+      where: {
+        id: orderId,
+      },
+      data: {
+        ...updateOrderDto,
+      },
+    });
+
+    return updatedOrder;
   }
 }

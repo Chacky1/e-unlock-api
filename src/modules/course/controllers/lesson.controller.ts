@@ -13,7 +13,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { tmpdir } from 'os';
 import { LessonService } from '../providers/services/lesson.service';
 import { CreateLessonDto } from '../dto/create-lesson.dto';
-import { ErrorsInterceptor } from '../providers/interceptors/errors.interceptor';
+import { ErrorsInterceptor } from '../../../shared/interceptors/errors.interceptor';
 import {
   ApiConsumes,
   ApiCreatedResponse,

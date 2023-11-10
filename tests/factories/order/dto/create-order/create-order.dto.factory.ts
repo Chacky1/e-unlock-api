@@ -1,5 +1,6 @@
 import { faker } from '@faker-js/faker';
 import { CreateOrderDto } from '../../../../../src/modules/order/dto/create-order.dto';
+import { OrderStatus } from '../../../../../src/modules/order/types/order.type';
 
 export const createFakeOrderDto = (
   order: Partial<CreateOrderDto> = {},
@@ -10,8 +11,3 @@ export const createFakeOrderDto = (
   status: order.status ?? faker.helpers.enumValue(OrderStatus),
   ...override,
 });
-
-enum OrderStatus {
-  SUCCESS = 'SUCCESS',
-  CANCELLED = 'CANCELLED',
-}

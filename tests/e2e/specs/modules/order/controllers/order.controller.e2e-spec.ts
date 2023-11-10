@@ -7,6 +7,7 @@ import { CourseModule } from '../../../../../../src/modules/course/course.module
 import { OrderModule } from '../../../../../../src/modules/order/order.module';
 import { ScopeGuard } from '../../../../../../src/shared/auth/providers/guards/scope.guard';
 import { JwtStrategy } from '../../../../../../src/shared/auth/providers/strategies/jwt.strategy';
+import { OrderStatus } from '../../../../../../src/modules/order/types/order.type';
 import { fetchAccessToken } from '../../../../helpers/access-token.helper';
 import { initNestApp } from '../../../../helpers/nest-app.helper';
 import { createFakeCourseDto } from '../../../../../factories/course/dto/create-course/create-course.dto.factory';
@@ -83,6 +84,59 @@ describe('OrderController (e2e)', () => {
         .set('Authorization', `Bearer ${accessToken}`)
         .send(fakeOrder)
         .expect(HttpStatus.CREATED);
+    });
+  });
+
+  describe('PATCH /orders/:id', () => {
+    it('should update an order when called.', async () => {
+      const fakeOrder = createFakeOrderDto({
+        courseId: existingCourseId,
+        userCode: existingUserCode,
+      });
+
+      const orderResponse = await request(app.getHttpServer())
+        .post('/orders')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .send(fakeOrder);
+
+      const orderId = orderResponse.body.id;
+
+      await request(app.getHttpServer())
+        .patch(`/orders/${orderId}`)
+        .set('Authorization', `Bearer ${accessToken}`)
+        .send({ status: OrderStatus.COMPLETED })
+        .expect(HttpStatus.OK);
+    });
+
+    it('should return a 404 error when the order does not exist.', async () => {
+      const orderId = 999;
+
+      await request(app.getHttpServer())
+        .patch(`/orders/${orderId}`)
+        .set('Authorization', `Bearer ${accessToken}`)
+        .send({ status: OrderStatus.COMPLETED })
+        .expect(HttpStatus.NOT_FOUND);
+    });
+
+    it('should return a 400 error when the order status is invalid.', async () => {
+      const fakeOrder = createFakeOrderDto({
+        courseId: existingCourseId,
+        userCode: existingUserCode,
+      });
+      const invalidStatus = 'invalid_status';
+
+      const orderResponse = await request(app.getHttpServer())
+        .post('/orders')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .send(fakeOrder);
+
+      const orderId = orderResponse.body.id;
+
+      await request(app.getHttpServer())
+        .patch(`/orders/${orderId}`)
+        .set('Authorization', `Bearer ${accessToken}`)
+        .send({ status: invalidStatus })
+        .expect(HttpStatus.BAD_REQUEST);
     });
   });
 });
