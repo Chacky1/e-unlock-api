@@ -9,6 +9,7 @@ describe('OrderService', () => {
 
   const orderRepositoryMock = {
     create: jest.fn(),
+    update: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -33,6 +34,19 @@ describe('OrderService', () => {
       await service.create(toCreateOrder);
 
       expect(repository.create).toHaveBeenCalledWith(toCreateOrder);
+    });
+  });
+
+  describe('updateOrder', () => {
+    it('should update an order when called.', async () => {
+      const toUpdateOrder = createFakeOrderDto();
+      const orderId = 1;
+
+      await service.update(orderId, { status: toUpdateOrder.status });
+
+      expect(repository.update).toHaveBeenCalledWith(orderId, {
+        status: toUpdateOrder.status,
+      });
     });
   });
 });
