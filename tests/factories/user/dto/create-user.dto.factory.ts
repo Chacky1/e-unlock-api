@@ -5,7 +5,7 @@ export const createFakeUserDto = (
   user: Partial<CreateUserDto> = {},
   override?: Partial<CreateUserDto>,
 ): CreateUserDto => ({
-  code: user.code ?? faker.lorem.word(),
+  code: user.code ?? faker.string.uuid(),
   email: user.email ?? faker.internet.email(),
   ...override,
 });
