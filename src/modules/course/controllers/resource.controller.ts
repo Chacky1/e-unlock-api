@@ -17,7 +17,7 @@ import { Scope } from '../../../shared/auth/decorator/scope.decorator';
 import { ScopeGuard } from '../../../shared/auth/providers/guards/scope.guard';
 import { ResourceService } from '../providers/services/resource.service';
 import { Resource, ResourceQuerySearch } from '../types/resource.type';
-import { ErrorsInterceptor } from '../providers/interceptors/errors.interceptor';
+import { ErrorsInterceptor } from '../../../shared/interceptors/errors.interceptor';
 import { CreateResourceDto } from '../dto/create-resource.dto';
 
 const UPLOAD_FILE_PATH = `${tmpdir()}/resources/uploads`;

@@ -22,7 +22,7 @@ import { ScopeGuard } from '../../../shared/auth/providers/guards/scope.guard';
 import { Scope } from '../../../shared/auth/decorator/scope.decorator';
 import { CreateCategoryDto } from '../dto/create-category.dto';
 import { CategoryService } from '../providers/services/category.service';
-import { ErrorsInterceptor } from '../providers/interceptors/errors.interceptor';
+import { ErrorsInterceptor } from '../../../shared/interceptors/errors.interceptor';
 import { Category } from '../types/category.type';
 import { Course } from '../types/course.type';
 import { CourseService } from '../providers/services/course.service';

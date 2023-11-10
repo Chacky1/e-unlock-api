@@ -27,7 +27,7 @@ import {
   CourseQuerySearch,
   CourseWithSections,
 } from '../types/course.type';
-import { ErrorsInterceptor } from '../providers/interceptors/errors.interceptor';
+import { ErrorsInterceptor } from '../../../shared/interceptors/errors.interceptor';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 
 const UPLOAD_FILE_PATH = `${tmpdir()}/courses/uploads`;
