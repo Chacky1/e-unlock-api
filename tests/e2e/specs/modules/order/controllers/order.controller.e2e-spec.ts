@@ -104,7 +104,7 @@ describe('OrderController (e2e)', () => {
       await request(app.getHttpServer())
         .patch(`/orders/${orderId}`)
         .set('Authorization', `Bearer ${accessToken}`)
-        .send({ status: OrderStatus.COMPLETED })
+        .send({ status: OrderStatus.SUCCESS })
         .expect(HttpStatus.OK);
     });
 
@@ -114,7 +114,7 @@ describe('OrderController (e2e)', () => {
       await request(app.getHttpServer())
         .patch(`/orders/${orderId}`)
         .set('Authorization', `Bearer ${accessToken}`)
-        .send({ status: OrderStatus.COMPLETED })
+        .send({ status: OrderStatus.SUCCESS })
         .expect(HttpStatus.NOT_FOUND);
     });
 
