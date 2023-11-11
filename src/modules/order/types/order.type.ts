@@ -3,7 +3,7 @@ import { IsReadOnly } from '../../../shared/decorators/readonly.decorators';
 
 export enum OrderStatus {
   PENDING = 'PENDING',
-  COMPLETED = 'COMPLETED',
+  SUCCESS = 'SUCCESS',
   CANCELLED = 'CANCELLED',
 }
 
