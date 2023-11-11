@@ -85,6 +85,25 @@ describe('OrderController (e2e)', () => {
         .send(fakeOrder)
         .expect(HttpStatus.CREATED);
     });
+
+    it('should return a 400 error when the user already has the course.', async () => {
+      const fakeOrder = createFakeOrderDto({
+        courseId: existingCourseId,
+        userCode: existingUserCode,
+        status: OrderStatus.SUCCESS,
+      });
+
+      await request(app.getHttpServer())
+        .post('/orders')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .send(fakeOrder);
+
+      await request(app.getHttpServer())
+        .post('/orders')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .send(fakeOrder)
+        .expect(HttpStatus.BAD_REQUEST);
+    });
   });
 
   describe('PATCH /orders/:id', () => {
