@@ -14,7 +14,22 @@ export class OrderRepository {
       where: {
         code: createOrderDto.userCode,
       },
+      include: {
+        courses: true,
+      },
     });
+
+    if (!user) {
+      throw new ResourceNotFoundError('USER', `${createOrderDto.userCode}`);
+    }
+
+    if (
+      user.courses.find(
+        (course) => +course.courseId === +createOrderDto.courseId,
+      )
+    ) {
+      throw new Error('ORDER_USER_ALREADY_HAS_COURSE');
+    }
 
     const order = await this.databaseService.order.create({
       data: {
@@ -25,7 +40,7 @@ export class OrderRepository {
     });
 
     if (order.status === OrderStatus.SUCCESS)
-      this.addCourseToUser(user.id, createOrderDto.courseId);
+      await this.addCourseToUser(user.id, createOrderDto.courseId);
 
     return order;
   }
@@ -51,13 +66,13 @@ export class OrderRepository {
     });
 
     if (updatedOrder.status === OrderStatus.SUCCESS)
-      this.addCourseToUser(updatedOrder.userId, updatedOrder.courseId);
+      await this.addCourseToUser(updatedOrder.userId, updatedOrder.courseId);
 
     return updatedOrder;
   }
 
   private async addCourseToUser(userId: number, courseId: number) {
-    const userCourse = this.databaseService.userCourse.findFirst({
+    const userCourse = await this.databaseService.userCourse.findFirst({
       where: {
         userId,
         courseId,

@@ -47,6 +47,12 @@ export class ErrorsInterceptor implements NestInterceptor {
           });
         }
 
+        if (error.message === 'ORDER_USER_ALREADY_HAS_COURSE') {
+          return throwError(() => {
+            return new BadRequestException(error.message);
+          });
+        }
+
         return throwError(() => error);
       }),
     );
