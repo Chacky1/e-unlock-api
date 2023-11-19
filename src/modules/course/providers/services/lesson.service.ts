@@ -16,23 +16,23 @@ export class LessonService {
   ) {}
 
   public async findOne(id: number): Promise<Lesson> {
-    const lesson = await this.lessonRepository.findOne(id);
+    const databaseLesson = await this.lessonRepository.findOne(id);
 
-    if (!lesson) {
+    if (!databaseLesson) {
       return undefined;
     }
 
-    if (!lesson.videoUrl) {
-      return lesson;
+    if (!databaseLesson.videoUrl) {
+      return databaseLesson;
     }
 
     const [lessonVideoUrl] = await this.storageService.resolveSignedUrl(
       CLOUD_STORAGE_BUCKET_NAME,
-      lesson.videoUrl,
+      databaseLesson.videoUrl,
     );
 
     return {
-      ...lesson,
+      ...databaseLesson,
       videoUrl: lessonVideoUrl,
     };
   }
