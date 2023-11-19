@@ -136,14 +136,14 @@ model Resource {
 }
 
 model UserLesson {
-  id        Int      @id @default(autoincrement())
-  isDone    Boolean  @default(false) @map("is_done")
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
-  user      User     @relation(fields: [userId], references: [id])
-  userId    Int      @map("user_id")
-  lesson    Lesson   @relation(fields: [lessonId], references: [id])
-  lessonId  Int      @map("lesson_id")
+  id          Int      @id @default(autoincrement())
+  isCompleted Boolean  @default(false) @map("is_completed")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+  user        User     @relation(fields: [userId], references: [id])
+  userId      Int      @map("user_id")
+  lesson      Lesson   @relation(fields: [lessonId], references: [id])
+  lessonId    Int      @map("lesson_id")
 
   @@unique([userId, lessonId])
   @@map("user_lessons")

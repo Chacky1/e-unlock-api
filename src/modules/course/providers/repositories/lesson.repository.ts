@@ -82,7 +82,7 @@ export class LessonRepository {
           },
         },
         data: {
-          isDone: true,
+          isCompleted: true,
         },
       });
 
@@ -93,7 +93,7 @@ export class LessonRepository {
       data: {
         userId,
         lessonId,
-        isDone: true,
+        isCompleted: true,
       },
     });
 
@@ -142,7 +142,7 @@ export class LessonRepository {
         },
       },
       data: {
-        isDone: false,
+        isCompleted: false,
       },
     });
 
