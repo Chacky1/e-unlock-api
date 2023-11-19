@@ -65,4 +65,18 @@ export class UserController {
   ) {
     await this.userService.addCourse(userCode, +courseId);
   }
+
+  @Post(':userId/lessons/:lessonId/validate')
+  @UseGuards(AuthGuard('jwt'), ScopeGuard)
+  @Scope('add:users.lessons')
+  @ApiNoContentResponse()
+  @ApiParam({ name: 'userId', type: String })
+  @ApiParam({ name: 'lessonId', type: Number })
+  @HttpCode(204)
+  public async validateLesson(
+    @Param('userId') userId: string,
+    @Param('lessonId') lessonId: number,
+  ) {
+    await this.userService.validateLesson(+userId, +lessonId);
+  }
 }

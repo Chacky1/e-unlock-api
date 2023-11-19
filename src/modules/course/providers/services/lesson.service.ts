@@ -50,4 +50,8 @@ export class LessonService {
 
     return await this.lessonRepository.create(lesson, uploadedVideo.path);
   }
+
+  public async validateLesson(userId: number, lessonId: number) {
+    return await this.lessonRepository.validateLesson(userId, lessonId);
+  }
 }

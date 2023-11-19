@@ -2,12 +2,14 @@ import { Injectable } from '@nestjs/common';
 import { UserRepository } from '../repositories/user.repository';
 import { CreateUserDto } from '../../dto/create-user.dto';
 import { CourseService } from '../../../course/providers/services/course.service';
+import { LessonService } from '../../../course/providers/services/lesson.service';
 
 @Injectable()
 export class UserService {
   constructor(
     private readonly userRepository: UserRepository,
     private readonly courseService: CourseService,
+    private readonly lessonService: LessonService,
   ) {}
 
   public async findOne(code: string) {
@@ -40,5 +42,9 @@ export class UserService {
 
   public async addCourse(userCode: string, courseId: number) {
     return await this.userRepository.addCourse(userCode, courseId);
+  }
+
+  public async validateLesson(userId: number, lessonId: number) {
+    return await this.lessonService.validateLesson(userId, lessonId);
   }
 }
