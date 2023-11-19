@@ -11,6 +11,9 @@ describe('Lesson Service', () => {
   const lessonRepositoryMock = {
     findOne: jest.fn(),
     create: jest.fn(),
+    findUserLessons: jest.fn(),
+    validateLesson: jest.fn(),
+    invalidateLesson: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -52,6 +55,41 @@ describe('Lesson Service', () => {
       await service.create(toCreateLesson);
 
       expect(repository.create).toHaveBeenCalledWith(toCreateLesson);
+    });
+  });
+
+  describe('findUserLessons', () => {
+    it('should return user lessons when called.', async () => {
+      const userId = 1;
+
+      await service.findUserLessons(userId);
+
+      expect(repository.findUserLessons).toHaveBeenCalledWith(userId);
+    });
+  });
+
+  describe('validateLesson', () => {
+    it('should validate a lesson when called.', async () => {
+      const userId = 1;
+      const lessonId = 2;
+
+      await service.validateLesson(userId, lessonId);
+
+      expect(repository.validateLesson).toHaveBeenCalledWith(userId, lessonId);
+    });
+  });
+
+  describe('invalidateLesson', () => {
+    it('should invalidate a lesson when called.', async () => {
+      const userId = 1;
+      const lessonId = 2;
+
+      await service.invalidateLesson(userId, lessonId);
+
+      expect(repository.invalidateLesson).toHaveBeenCalledWith(
+        userId,
+        lessonId,
+      );
     });
   });
 });
