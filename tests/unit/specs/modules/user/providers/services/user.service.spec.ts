@@ -5,16 +5,25 @@ import { UserService } from '../../../../../../../src/modules/user/providers/ser
 import { CourseRepository } from '../../../../../../../src/modules/course/providers/repositories/course.repository';
 import { StorageService } from '../../../../../../../src/modules/config/cloud/providers/services/storage.service';
 import { DatabaseService } from '../../../../../../../src/modules/config/database/providers/services/database.service';
+import { LessonService } from '../../../../../../../src/modules/course/providers/services/lesson.service';
+import { LessonRepository } from '../../../../../../../src/modules/course/providers/repositories/lesson.repository';
 import { createFakeUserDto } from '../../../../../../factories/user/dto/create-user.dto.factory';
 
 describe('UserService', () => {
-  let service;
-  let repository;
+  let userService;
+  let lessonService;
+  let userRepository;
 
   const userRepositoryMock = {
     findOne: jest.fn(),
     create: jest.fn(),
     addCourse: jest.fn(),
+  };
+
+  const lessonServiceMock = {
+    findUserLessons: jest.fn(),
+    validateLesson: jest.fn(),
+    invalidateLesson: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -23,32 +32,38 @@ describe('UserService', () => {
         UserService,
         CourseService,
         CourseRepository,
+        LessonRepository,
         StorageService,
         DatabaseService,
         {
           provide: UserRepository,
           useValue: userRepositoryMock,
         },
+        {
+          provide: LessonService,
+          useValue: lessonServiceMock,
+        },
       ],
     }).compile();
 
-    service = module.get<UserService>(UserService);
-    repository = module.get<UserRepository>(UserRepository);
+    userService = module.get<UserService>(UserService);
+    lessonService = module.get<LessonService>(LessonService);
+    userRepository = module.get<UserRepository>(UserRepository);
   });
 
   describe('findOne', () => {
     it('should return a user when called.', async () => {
       const userCode = 'user_1';
 
-      await service.findOne(userCode);
+      await userService.findOne(userCode);
 
-      expect(repository.findOne).toHaveBeenCalledWith(userCode);
+      expect(userRepository.findOne).toHaveBeenCalledWith(userCode);
     });
 
     it('should return undefined if user does not exist.', async () => {
       const userCode = 'user_undefined';
 
-      await expect(service.findOne(userCode)).resolves.toBeUndefined();
+      await expect(userService.findOne(userCode)).resolves.toBeUndefined();
     });
   });
 
@@ -56,9 +71,9 @@ describe('UserService', () => {
     it('should create a user when called.', async () => {
       const toCreateUser = createFakeUserDto();
 
-      await service.create(toCreateUser);
+      await userService.create(toCreateUser);
 
-      expect(repository.create).toHaveBeenCalledWith(toCreateUser);
+      expect(userRepository.create).toHaveBeenCalledWith(toCreateUser);
     });
   });
 
@@ -67,9 +82,47 @@ describe('UserService', () => {
       const userCode = 'user_1';
       const courseId = 1;
 
-      await service.addCourse(userCode, courseId);
+      await userService.addCourse(userCode, courseId);
 
-      expect(repository.addCourse).toHaveBeenCalledWith(userCode, courseId);
+      expect(userRepository.addCourse).toHaveBeenCalledWith(userCode, courseId);
+    });
+  });
+
+  describe('findUserLessons', () => {
+    it('should return user lessons when called.', async () => {
+      const userId = 1;
+
+      await userService.findUserLessons(userId);
+
+      expect(lessonService.findUserLessons).toHaveBeenCalledWith(userId);
+    });
+  });
+
+  describe('validateLesson', () => {
+    it('should validate a lesson when called.', async () => {
+      const userId = 1;
+      const lessonId = 1;
+
+      await userService.validateLesson(userId, lessonId);
+
+      expect(lessonService.validateLesson).toHaveBeenCalledWith(
+        userId,
+        lessonId,
+      );
+    });
+  });
+
+  describe('invalidateLesson', () => {
+    it('should invalidate a lesson when called.', async () => {
+      const userId = 1;
+      const lessonId = 1;
+
+      await userService.invalidateLesson(userId, lessonId);
+
+      expect(lessonService.invalidateLesson).toHaveBeenCalledWith(
+        userId,
+        lessonId,
+      );
     });
   });
 });
