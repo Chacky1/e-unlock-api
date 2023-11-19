@@ -43,6 +43,16 @@ export class LessonRepository {
     return lesson;
   }
 
+  public async findUserLessons(userId: number) {
+    const databaseUserLessons = await this.databaseService.userLesson.findMany({
+      where: {
+        userId,
+      },
+    });
+
+    return databaseUserLessons;
+  }
+
   public async validateLesson(userId: number, lessonId: number) {
     const lesson = await this.databaseService.lesson.findUnique({
       where: {

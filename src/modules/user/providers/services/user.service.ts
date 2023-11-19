@@ -44,6 +44,10 @@ export class UserService {
     return await this.userRepository.addCourse(userCode, courseId);
   }
 
+  public async findUserLessons(userId: number) {
+    return await this.lessonService.findUserLessons(userId);
+  }
+
   public async validateLesson(userId: number, lessonId: number) {
     return await this.lessonService.validateLesson(userId, lessonId);
   }
