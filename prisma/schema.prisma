@@ -145,5 +145,6 @@ model UserLesson {
   lesson    Lesson   @relation(fields: [lessonId], references: [id])
   lessonId  Int      @map("lesson_id")
 
+  @@unique([userId, lessonId])
   @@map("user_lessons")
 }
