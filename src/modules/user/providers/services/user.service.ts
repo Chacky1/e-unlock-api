@@ -47,4 +47,8 @@ export class UserService {
   public async validateLesson(userId: number, lessonId: number) {
     return await this.lessonService.validateLesson(userId, lessonId);
   }
+
+  public async invalidateLesson(userId: number, lessonId: number) {
+    return await this.lessonService.invalidateLesson(userId, lessonId);
+  }
 }

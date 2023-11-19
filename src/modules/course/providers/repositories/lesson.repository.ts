@@ -99,4 +99,53 @@ export class LessonRepository {
 
     return;
   }
+
+  public async invalidateLesson(userId: number, lessonId: number) {
+    const lesson = await this.databaseService.lesson.findUnique({
+      where: {
+        id: lessonId,
+      },
+    });
+
+    if (!lesson) {
+      throw new ResourceNotFoundError('LESSON', `${lessonId}`);
+    }
+
+    const user = await this.databaseService.user.findUnique({
+      where: {
+        id: userId,
+      },
+    });
+
+    if (!user) {
+      throw new ResourceNotFoundError('USER', `${userId}`);
+    }
+
+    const userLessons = await this.databaseService.userLesson.findUnique({
+      where: {
+        userId_lessonId: {
+          userId,
+          lessonId,
+        },
+      },
+    });
+
+    if (!userLessons) {
+      throw new ResourceNotFoundError('USER_LESSON', `${userId}-${lessonId}`);
+    }
+
+    await this.databaseService.userLesson.update({
+      where: {
+        userId_lessonId: {
+          userId,
+          lessonId,
+        },
+      },
+      data: {
+        isDone: false,
+      },
+    });
+
+    return;
+  }
 }
