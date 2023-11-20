@@ -8,7 +8,17 @@ import { ResourceNotFoundError } from '../../../../shared/error/types/resource-n
 export class UserRepository {
   constructor(private readonly databaseService: DatabaseService) {}
 
-  public async findOne(code: string): Promise<
+  public async findOneWithId(id: number): Promise<User> {
+    const user = await this.databaseService.user.findUnique({
+      where: {
+        id,
+      },
+    });
+
+    return user;
+  }
+
+  public async findOneWithCode(code: string): Promise<
     User & {
       courses: UserCourse[];
     }

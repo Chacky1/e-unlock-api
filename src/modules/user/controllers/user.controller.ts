@@ -10,7 +10,7 @@ import {
 } from '@nestjs/common';
 import { UserService } from '../providers/services/user.service';
 import { CreateUserDto } from '../dto/create-user.dto';
-import { User } from '../types/user.type';
+import { User, UserLesson } from '../types/user.type';
 import { AuthGuard } from '@nestjs/passport';
 import {
   ApiParam,
@@ -64,5 +64,47 @@ export class UserController {
     @Param('courseId') courseId: number,
   ) {
     await this.userService.addCourse(userCode, +courseId);
+  }
+
+  @Get(':userId/lessons')
+  @UseGuards(AuthGuard('jwt'), ScopeGuard)
+  @Scope('read:users.lessons')
+  @ApiOkResponse({
+    type: UserLesson,
+    isArray: true,
+  })
+  @ApiParam({ name: 'userId', type: String })
+  public async findUserLessons(@Param('userId') userId: string) {
+    const userLessons = await this.userService.findUserLessons(+userId);
+
+    return userLessons;
+  }
+
+  @Post(':userId/lessons/:lessonId/validate')
+  @UseGuards(AuthGuard('jwt'), ScopeGuard)
+  @Scope('add:users.lessons')
+  @ApiNoContentResponse()
+  @ApiParam({ name: 'userId', type: String })
+  @ApiParam({ name: 'lessonId', type: Number })
+  @HttpCode(204)
+  public async validateLesson(
+    @Param('userId') userId: number,
+    @Param('lessonId') lessonId: number,
+  ) {
+    await this.userService.validateLesson(+userId, +lessonId);
+  }
+
+  @Post(':userId/lessons/:lessonId/invalidate')
+  @UseGuards(AuthGuard('jwt'), ScopeGuard)
+  @Scope('add:users.lessons')
+  @ApiNoContentResponse()
+  @ApiParam({ name: 'userId', type: String })
+  @ApiParam({ name: 'lessonId', type: Number })
+  @HttpCode(204)
+  public async invalidateLesson(
+    @Param('userId') userId: number,
+    @Param('lessonId') lessonId: number,
+  ) {
+    await this.userService.invalidateLesson(+userId, +lessonId);
   }
 }

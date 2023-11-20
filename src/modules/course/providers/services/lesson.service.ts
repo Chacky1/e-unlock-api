@@ -16,23 +16,23 @@ export class LessonService {
   ) {}
 
   public async findOne(id: number): Promise<Lesson> {
-    const lesson = await this.lessonRepository.findOne(id);
+    const databaseLesson = await this.lessonRepository.findOne(id);
 
-    if (!lesson) {
+    if (!databaseLesson) {
       return undefined;
     }
 
-    if (!lesson.videoUrl) {
-      return lesson;
+    if (!databaseLesson.videoUrl) {
+      return databaseLesson;
     }
 
     const [lessonVideoUrl] = await this.storageService.resolveSignedUrl(
       CLOUD_STORAGE_BUCKET_NAME,
-      lesson.videoUrl,
+      databaseLesson.videoUrl,
     );
 
     return {
-      ...lesson,
+      ...databaseLesson,
       videoUrl: lessonVideoUrl,
     };
   }
@@ -49,5 +49,17 @@ export class LessonService {
     );
 
     return await this.lessonRepository.create(lesson, uploadedVideo.path);
+  }
+
+  public async findUserLessons(userId: number) {
+    return await this.lessonRepository.findUserLessons(userId);
+  }
+
+  public async validateLesson(userId: number, lessonId: number) {
+    return await this.lessonRepository.validateLesson(userId, lessonId);
+  }
+
+  public async invalidateLesson(userId: number, lessonId: number) {
+    return await this.lessonRepository.invalidateLesson(userId, lessonId);
   }
 }

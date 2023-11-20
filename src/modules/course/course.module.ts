@@ -44,5 +44,6 @@ import { ResourceRepository } from './providers/repositories/resource.repository
       useClass: ErrorsInterceptor,
     },
   ],
+  exports: [LessonService],
 })
 export class CourseModule {}

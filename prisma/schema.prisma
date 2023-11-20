@@ -11,16 +11,17 @@ datasource db {
 }
 
 model User {
-  id        Int          @id @default(autoincrement())
-  code      String       @unique
-  email     String       @unique
-  firstName String?
-  lastName  String?
-  createdAt DateTime     @default(now()) @map("created_at")
-  updatedAt DateTime     @updatedAt @map("updated_at")
-  deletedAt DateTime?    @map("deleted_at")
-  courses   UserCourse[]
-  orders    Order[]
+  id         Int          @id @default(autoincrement())
+  code       String       @unique
+  email      String       @unique
+  firstName  String?
+  lastName   String?
+  createdAt  DateTime     @default(now()) @map("created_at")
+  updatedAt  DateTime     @updatedAt @map("updated_at")
+  deletedAt  DateTime?    @map("deleted_at")
+  courses    UserCourse[]
+  orders     Order[]
+  UserLesson UserLesson[]
 
   @@map("users")
 }
@@ -79,18 +80,19 @@ model Section {
 }
 
 model Lesson {
-  id           Int        @id @default(autoincrement())
+  id           Int          @id @default(autoincrement())
   name         String
-  textContent  String?    @map("text_content") @db.Text
-  active       Boolean    @default(false)
-  sectionOrder Int        @map("section_order")
-  videoUrl     String?    @map("video_url")
-  createdAt    DateTime   @default(now()) @map("created_at")
-  updatedAt    DateTime   @updatedAt @map("updated_at")
-  publishedAt  DateTime?  @map("published_at")
-  section      Section    @relation(fields: [sectionId], references: [id])
-  sectionId    Int        @map("section_id")
+  textContent  String?      @map("text_content") @db.Text
+  active       Boolean      @default(false)
+  sectionOrder Int          @map("section_order")
+  videoUrl     String?      @map("video_url")
+  createdAt    DateTime     @default(now()) @map("created_at")
+  updatedAt    DateTime     @updatedAt @map("updated_at")
+  publishedAt  DateTime?    @map("published_at")
+  section      Section      @relation(fields: [sectionId], references: [id])
+  sectionId    Int          @map("section_id")
   resources    Resource[]
+  UserLesson   UserLesson[]
 
   @@map("lessons")
 }
@@ -109,13 +111,13 @@ model Category {
 }
 
 model Order {
-  id        Int       @id @default(autoincrement())
-  createdAt DateTime  @default(now()) @map("created_at")
-  updatedAt DateTime  @updatedAt @map("updated_at")
-  user      User      @relation(fields: [userId], references: [id])
-  userId    Int       @map("user_id")
-  course    Course    @relation(fields: [courseId], references: [id])
-  courseId  Int       @map("course_id")
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int      @map("user_id")
+  course    Course   @relation(fields: [courseId], references: [id])
+  courseId  Int      @map("course_id")
   status    String
 
   @@map("orders")
@@ -131,4 +133,18 @@ model Resource {
   lesson    Lesson   @relation(fields: [lessonId], references: [id])
 
   @@map("resources")
+}
+
+model UserLesson {
+  id          Int      @id @default(autoincrement())
+  isCompleted Boolean  @default(false) @map("is_completed")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+  user        User     @relation(fields: [userId], references: [id])
+  userId      Int      @map("user_id")
+  lesson      Lesson   @relation(fields: [lessonId], references: [id])
+  lessonId    Int      @map("lesson_id")
+
+  @@unique([userId, lessonId])
+  @@map("user_lessons")
 }

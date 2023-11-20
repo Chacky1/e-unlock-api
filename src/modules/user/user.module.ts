@@ -7,10 +7,19 @@ import { CourseService } from '../course/providers/services/course.service';
 import { CourseRepository } from '../course/providers/repositories/course.repository';
 import { CloudModule } from '../config/cloud/cloud.module';
 import { UserWebhookController } from './controllers/webhook.controller';
+import { LessonService } from '../course/providers/services/lesson.service';
+import { LessonRepository } from '../course/providers/repositories/lesson.repository';
 
 @Module({
   imports: [DatabaseModule, CloudModule],
   controllers: [UserController, UserWebhookController],
-  providers: [UserService, UserRepository, CourseService, CourseRepository],
+  providers: [
+    UserService,
+    UserRepository,
+    CourseService,
+    CourseRepository,
+    LessonService,
+    LessonRepository,
+  ],
 })
 export class UserModule {}

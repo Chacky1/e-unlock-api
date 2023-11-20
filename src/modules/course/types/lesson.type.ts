@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsNumber, IsOptional, IsString } from 'class-validator';
+import { IsBoolean, IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class Lesson {
   @IsString()
@@ -37,4 +37,12 @@ export class Lesson {
     example: 'https://www.youtube.com/watch?v=0oGcWm1T1Lw',
   })
   public videoUrl: string;
+
+  @IsBoolean()
+  @IsOptional()
+  @ApiProperty({
+    description: 'The completion status of the lesson',
+    example: false,
+  })
+  public isCompleted?: boolean;
 }
