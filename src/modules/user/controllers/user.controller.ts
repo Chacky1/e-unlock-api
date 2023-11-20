@@ -88,7 +88,7 @@ export class UserController {
   @ApiParam({ name: 'lessonId', type: Number })
   @HttpCode(204)
   public async validateLesson(
-    @Param('userId') userId: string,
+    @Param('userId') userId: number,
     @Param('lessonId') lessonId: number,
   ) {
     await this.userService.validateLesson(+userId, +lessonId);
@@ -102,7 +102,7 @@ export class UserController {
   @ApiParam({ name: 'lessonId', type: Number })
   @HttpCode(204)
   public async invalidateLesson(
-    @Param('userId') userId: string,
+    @Param('userId') userId: number,
     @Param('lessonId') lessonId: number,
   ) {
     await this.userService.invalidateLesson(+userId, +lessonId);
