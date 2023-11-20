@@ -15,7 +15,8 @@ describe('UserService', () => {
   let userRepository;
 
   const userRepositoryMock = {
-    findOne: jest.fn(),
+    findOneWithId: jest.fn(),
+    findOneWithCode: jest.fn(),
     create: jest.fn(),
     addCourse: jest.fn(),
   };
@@ -57,7 +58,7 @@ describe('UserService', () => {
 
       await userService.findOne(userCode);
 
-      expect(userRepository.findOne).toHaveBeenCalledWith(userCode);
+      expect(userRepository.findOneWithCode).toHaveBeenCalledWith(userCode);
     });
 
     it('should return undefined if user does not exist.', async () => {
@@ -91,9 +92,13 @@ describe('UserService', () => {
   describe('findUserLessons', () => {
     it('should return user lessons when called.', async () => {
       const userId = 1;
+      const fakeUser = createFakeUserDto();
+
+      userRepository.findOneWithId.mockResolvedValue(fakeUser);
 
       await userService.findUserLessons(userId);
 
+      expect(userRepository.findOneWithId).toHaveBeenCalledWith(userId);
       expect(lessonService.findUserLessons).toHaveBeenCalledWith(userId);
     });
   });
