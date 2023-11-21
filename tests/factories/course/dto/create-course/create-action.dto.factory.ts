@@ -9,7 +9,7 @@ export const createFakeActionDto = (
   description: action.description ?? faker.lorem.sentence(),
   type: action.type ?? faker.helpers.enumValue(ActionType),
   lessonId: action.lessonId ?? faker.number.int(),
-  order: action.order ?? faker.number.int(),
+  order: action.order ?? faker.number.int(100),
   ...action,
   ...overrides,
 });
