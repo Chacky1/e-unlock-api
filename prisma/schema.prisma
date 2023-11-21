@@ -155,6 +155,7 @@ model Action {
   id          Int          @id @default(autoincrement())
   description String
   type        String
+  order       Int
   createdAt   DateTime     @default(now()) @map("created_at")
   updatedAt   DateTime     @updatedAt @map("updated_at")
   lessonId    Int          @map("lesson_id")
