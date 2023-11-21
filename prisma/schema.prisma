@@ -11,17 +11,18 @@ datasource db {
 }
 
 model User {
-  id         Int          @id @default(autoincrement())
-  code       String       @unique
-  email      String       @unique
-  firstName  String?
-  lastName   String?
-  createdAt  DateTime     @default(now()) @map("created_at")
-  updatedAt  DateTime     @updatedAt @map("updated_at")
-  deletedAt  DateTime?    @map("deleted_at")
-  courses    UserCourse[]
-  orders     Order[]
-  UserLesson UserLesson[]
+  id        Int          @id @default(autoincrement())
+  code      String       @unique
+  email     String       @unique
+  firstName String?
+  lastName  String?
+  createdAt DateTime     @default(now()) @map("created_at")
+  updatedAt DateTime     @updatedAt @map("updated_at")
+  deletedAt DateTime?    @map("deleted_at")
+  courses   UserCourse[]
+  orders    Order[]
+  lessons   UserLesson[]
+  actions   UserAction[]
 
   @@map("users")
 }
@@ -92,7 +93,8 @@ model Lesson {
   section      Section      @relation(fields: [sectionId], references: [id])
   sectionId    Int          @map("section_id")
   resources    Resource[]
-  UserLesson   UserLesson[]
+  users        UserLesson[]
+  actions      Action[]
 
   @@map("lessons")
 }
@@ -147,4 +149,31 @@ model UserLesson {
 
   @@unique([userId, lessonId])
   @@map("user_lessons")
+}
+
+model Action {
+  id          Int          @id @default(autoincrement())
+  description String
+  type        String
+  createdAt   DateTime     @default(now()) @map("created_at")
+  updatedAt   DateTime     @updatedAt @map("updated_at")
+  lessonId    Int          @map("lesson_id")
+  lesson      Lesson       @relation(fields: [lessonId], references: [id])
+  users       UserAction[]
+
+  @@map("actions")
+}
+
+model UserAction {
+  id          Int      @id @default(autoincrement())
+  answer      String?
+  isCompleted Boolean  @default(false) @map("is_completed")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+  user        User     @relation(fields: [userId], references: [id])
+  userId      Int      @map("user_id")
+  action      Action   @relation(fields: [actionId], references: [id])
+  actionId    Int      @map("action_id")
+
+  @@map("user_actions")
 }
