@@ -13,7 +13,7 @@ export class ActionController {
 
   @Get()
   @UseGuards(AuthGuard('jwt'), ScopeGuard)
-  @Scope('read:actions')
+  @Scope('search:actions')
   @ApiOkResponse({
     type: [Action],
   })
