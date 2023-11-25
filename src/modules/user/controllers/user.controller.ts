@@ -5,6 +5,7 @@ import {
   HttpCode,
   NotFoundException,
   Param,
+  Patch,
   Post,
   UploadedFile,
   UseGuards,
@@ -130,6 +131,31 @@ export class UserController {
   @HttpCode(204)
   @ApiConsumes('multipart/form-data')
   public async completeAction(
+    @Param('userId') userId: number,
+    @Param('actionId') actionId: number,
+    @Body() body: CompleteActionDto,
+    @UploadedFile() file?: Express.Multer.File,
+  ) {
+    if (file) {
+      await this.userService.completeAction(+userId, +actionId, null, file);
+
+      return;
+    }
+
+    await this.userService.completeAction(+userId, +actionId, body.answer);
+
+    return;
+  }
+
+  @Patch(':userId/actions/:actionId/complete')
+  @UseGuards(AuthGuard('jwt'), ScopeGuard)
+  @Scope('update:users.actions')
+  @ApiNoContentResponse()
+  @ApiParam({ name: 'userId', type: String })
+  @ApiParam({ name: 'actionId', type: Number })
+  @HttpCode(204)
+  @ApiConsumes('multipart/form-data')
+  public async updateAction(
     @Param('userId') userId: number,
     @Param('actionId') actionId: number,
     @Body() body: CompleteActionDto,
