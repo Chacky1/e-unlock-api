@@ -1,6 +1,7 @@
 import { TestingModule, Test } from '@nestjs/testing';
 import { ActionRepository } from '../../../../../../../src/modules/course/providers/repositories/action.repository';
 import { ActionService } from '../../../../../../../src/modules/course/providers/services/action.service';
+import { StorageService } from '../../../../../../../src/modules/config/cloud/providers/services/storage.service';
 import { createFakeActionDto } from '../../../../../../factories/course/dto/create-course/create-action.dto.factory';
 
 describe('ActionService', () => {
@@ -9,12 +10,14 @@ describe('ActionService', () => {
 
   const actionRepositoryMock = {
     create: jest.fn(),
+    complete: jest.fn(),
   };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         ActionService,
+        StorageService,
         {
           provide: ActionRepository,
           useValue: actionRepositoryMock,
@@ -50,6 +53,23 @@ describe('ActionService', () => {
       await service.create(toCreateAction);
 
       expect(repository.create).toHaveBeenCalledWith(toCreateAction);
+    });
+  });
+
+  describe('complete', () => {
+    it('should complete an action when called.', async () => {
+      const userId = 1;
+      const actionId = 1;
+      const answer = 'answer';
+      const file = undefined;
+
+      await service.complete(userId, actionId, answer, file);
+
+      expect(repository.complete).toHaveBeenCalledWith(
+        userId,
+        actionId,
+        answer,
+      );
     });
   });
 });

@@ -7,11 +7,13 @@ import { StorageService } from '../../../../../../../src/modules/config/cloud/pr
 import { DatabaseService } from '../../../../../../../src/modules/config/database/providers/services/database.service';
 import { LessonService } from '../../../../../../../src/modules/course/providers/services/lesson.service';
 import { LessonRepository } from '../../../../../../../src/modules/course/providers/repositories/lesson.repository';
+import { ActionService } from '../../../../../../../src/modules/course/providers/services/action.service';
 import { createFakeUserDto } from '../../../../../../factories/user/dto/create-user.dto.factory';
 
 describe('UserService', () => {
   let userService;
   let lessonService;
+  let actionService;
   let userRepository;
 
   const userRepositoryMock = {
@@ -25,6 +27,10 @@ describe('UserService', () => {
     findUserLessons: jest.fn(),
     validateLesson: jest.fn(),
     invalidateLesson: jest.fn(),
+  };
+
+  const actionServiceMock = {
+    complete: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -44,11 +50,16 @@ describe('UserService', () => {
           provide: LessonService,
           useValue: lessonServiceMock,
         },
+        {
+          provide: ActionService,
+          useValue: actionServiceMock,
+        },
       ],
     }).compile();
 
     userService = module.get<UserService>(UserService);
     lessonService = module.get<LessonService>(LessonService);
+    actionService = module.get<ActionService>(ActionService);
     userRepository = module.get<UserRepository>(UserRepository);
   });
 
@@ -127,6 +138,24 @@ describe('UserService', () => {
       expect(lessonService.invalidateLesson).toHaveBeenCalledWith(
         userId,
         lessonId,
+      );
+    });
+  });
+
+  describe('completeAction', () => {
+    it('should complete an action when called.', async () => {
+      const userId = 1;
+      const actionId = 1;
+      const answer = 'answer';
+      const file = undefined;
+
+      await userService.completeAction(userId, actionId, answer, file);
+
+      expect(actionService.complete).toHaveBeenCalledWith(
+        userId,
+        actionId,
+        answer,
+        file,
       );
     });
   });
