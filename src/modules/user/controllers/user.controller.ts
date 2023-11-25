@@ -17,6 +17,7 @@ import {
   ApiOkResponse,
   ApiCreatedResponse,
   ApiNoContentResponse,
+  ApiConsumes,
 } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { UserService } from '../providers/services/user.service';
@@ -127,6 +128,7 @@ export class UserController {
   @ApiParam({ name: 'userId', type: String })
   @ApiParam({ name: 'actionId', type: Number })
   @HttpCode(204)
+  @ApiConsumes('multipart/form-data')
   public async completeAction(
     @Param('userId') userId: number,
     @Param('actionId') actionId: number,
