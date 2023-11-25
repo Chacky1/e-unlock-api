@@ -1,6 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { IsNumber, IsOptional } from 'class-validator';
-import { IsReadOnly } from 'src/shared/decorators/readonly.decorators';
+import { IsReadOnly } from '../../../shared/decorators/readonly.decorators';
 
 export enum ActionType {
   QUESTION = 'QUESTION',

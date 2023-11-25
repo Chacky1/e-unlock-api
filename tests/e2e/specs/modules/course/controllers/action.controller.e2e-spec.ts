@@ -83,8 +83,6 @@ describe('Action Controller (e2e)', () => {
         lessonId: existingLessonId,
       });
 
-      console.log(fakeAction);
-
       await request(app.getHttpServer())
         .post('/actions')
         .set('Authorization', `Bearer ${accessToken}`)
