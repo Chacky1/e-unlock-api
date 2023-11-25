@@ -77,6 +77,29 @@ describe('Action Controller (e2e)', () => {
     await app.close();
   });
 
+  describe('GET /actions', () => {
+    it('should return 200 when actions are found.', async () => {
+      await request(app.getHttpServer())
+        .get('/actions')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .expect(HttpStatus.OK);
+    });
+
+    it('should return 200 when actions are found with lessonId filter.', async () => {
+      await request(app.getHttpServer())
+        .get(`/actions?lessonId=${existingLessonId}`)
+        .set('Authorization', `Bearer ${accessToken}`)
+        .expect(HttpStatus.OK);
+    });
+
+    it('should return 400 when lessonId is not a number.', async () => {
+      await request(app.getHttpServer())
+        .get('/actions?lessonId=abc')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .expect(HttpStatus.BAD_REQUEST);
+    });
+  });
+
   describe('POST /actions', () => {
     it('should return 201 when action is created.', async () => {
       const fakeAction = createFakeActionDto({

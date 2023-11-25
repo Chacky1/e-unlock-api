@@ -1,6 +1,7 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { IsNumber, IsOptional } from 'class-validator';
 import { IsReadOnly } from '../../../shared/decorators/readonly.decorators';
+import { Transform } from 'class-transformer';
 
 export enum ActionType {
   QUESTION = 'QUESTION',
@@ -68,6 +69,7 @@ export class Action {
 
 export class SearchActionQuery {
   @IsOptional()
+  @Transform(({ value }) => Number(value))
   @IsNumber()
   @ApiPropertyOptional({
     description: 'Lesson id the action belongs to',
