@@ -22,12 +22,12 @@ export class UserService {
       return undefined;
     }
 
-    if (!user.courses.length) {
+    if (!user.userCourses.length) {
       return user;
     }
 
     const courses = [];
-    for (const course of user.courses) {
+    for (const course of user.userCourses) {
       const courseDetails = await this.courseService.findOne(course.courseId);
 
       courses.push(courseDetails);
