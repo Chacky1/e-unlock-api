@@ -15,7 +15,8 @@ export class ActionController {
   @UseGuards(AuthGuard('jwt'), ScopeGuard)
   @Scope('search:actions')
   @ApiOkResponse({
-    type: [Action],
+    type: Action,
+    isArray: true,
   })
   async search(@Query() query: SearchActionQuery): Promise<Action[]> {
     return this.actionService.search(query);

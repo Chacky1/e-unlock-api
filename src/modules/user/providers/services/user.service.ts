@@ -3,6 +3,7 @@ import { UserRepository } from '../repositories/user.repository';
 import { CreateUserDto } from '../../dto/create-user.dto';
 import { CourseService } from '../../../course/providers/services/course.service';
 import { LessonService } from '../../../course/providers/services/lesson.service';
+import { ActionService } from '../../../course/providers/services/action.service';
 import { ResourceNotFoundError } from '../../../../shared/error/types/resource-not-found.error';
 
 @Injectable()
@@ -11,6 +12,7 @@ export class UserService {
     private readonly userRepository: UserRepository,
     private readonly courseService: CourseService,
     private readonly lessonService: LessonService,
+    private readonly actionService: ActionService,
   ) {}
 
   public async findOne(code: string) {
@@ -61,5 +63,14 @@ export class UserService {
 
   public async invalidateLesson(userId: number, lessonId: number) {
     return await this.lessonService.invalidateLesson(userId, lessonId);
+  }
+
+  public async completeAction(
+    userId: number,
+    actionId: number,
+    answer?: string,
+    file?: Express.Multer.File,
+  ) {
+    return await this.actionService.complete(userId, actionId, answer, file);
   }
 }

@@ -37,4 +37,67 @@ export class ActionRepository {
       data: createActionDto,
     });
   }
+
+  async complete(
+    userId: number,
+    actionId: number,
+    answer: string,
+  ): Promise<boolean> {
+    const action = await this.databaseService.action.findUnique({
+      where: {
+        id: actionId,
+      },
+    });
+
+    if (!action) {
+      throw new ResourceNotFoundError('ACTION', `${actionId}`);
+    }
+
+    const user = await this.databaseService.user.findUnique({
+      where: {
+        id: userId,
+      },
+    });
+
+    if (!user) {
+      throw new ResourceNotFoundError('USER', `${userId}`);
+    }
+
+    const userActions = await this.databaseService.userAction.findUnique({
+      where: {
+        userId_actionId: {
+          userId,
+          actionId,
+        },
+      },
+    });
+
+    if (userActions) {
+      await this.databaseService.userAction.update({
+        where: {
+          userId_actionId: {
+            userId,
+            actionId,
+          },
+        },
+        data: {
+          isCompleted: true,
+          answer,
+        },
+      });
+
+      return;
+    }
+
+    await this.databaseService.userAction.create({
+      data: {
+        userId,
+        actionId,
+        isCompleted: true,
+        answer,
+      },
+    });
+
+    return;
+  }
 }
