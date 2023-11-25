@@ -11,18 +11,18 @@ datasource db {
 }
 
 model User {
-  id        Int          @id @default(autoincrement())
-  code      String       @unique
-  email     String       @unique
-  firstName String?
-  lastName  String?
-  createdAt DateTime     @default(now()) @map("created_at")
-  updatedAt DateTime     @updatedAt @map("updated_at")
-  deletedAt DateTime?    @map("deleted_at")
-  courses   UserCourse[]
-  orders    Order[]
-  lessons   UserLesson[]
-  actions   UserAction[]
+  id          Int          @id @default(autoincrement())
+  code        String       @unique
+  email       String       @unique
+  firstName   String?
+  lastName    String?
+  createdAt   DateTime     @default(now()) @map("created_at")
+  updatedAt   DateTime     @updatedAt @map("updated_at")
+  deletedAt   DateTime?    @map("deleted_at")
+  userCourses UserCourse[]
+  orders      Order[]
+  userLessons UserLesson[]
+  userActions UserAction[]
 
   @@map("users")
 }
@@ -43,7 +43,7 @@ model Course {
   createdAt   DateTime     @default(now()) @map("created_at")
   updatedAt   DateTime     @updatedAt @map("updated_at")
   publishedAt DateTime?    @map("published_at")
-  users       UserCourse[]
+  userCourses UserCourse[]
   sections    Section[]
   category    Category     @relation(fields: [categoryId], references: [id])
   orders      Order[]
@@ -93,7 +93,7 @@ model Lesson {
   section      Section      @relation(fields: [sectionId], references: [id])
   sectionId    Int          @map("section_id")
   resources    Resource[]
-  users        UserLesson[]
+  userLessons  UserLesson[]
   actions      Action[]
 
   @@map("lessons")
@@ -160,7 +160,7 @@ model Action {
   updatedAt   DateTime     @updatedAt @map("updated_at")
   lessonId    Int          @map("lesson_id")
   lesson      Lesson       @relation(fields: [lessonId], references: [id])
-  users       UserAction[]
+  userActions UserAction[]
 
   @@map("actions")
 }
@@ -177,5 +177,6 @@ model UserAction {
   action      Action   @relation(fields: [actionId], references: [id])
   actionId    Int      @map("action_id")
 
+  @@unique([userId, actionId])
   @@map("user_actions")
 }
