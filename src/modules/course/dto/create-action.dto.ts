@@ -32,3 +32,19 @@ export class CreateActionDto {
   })
   public order: number;
 }
+
+export class CreateActionFeedbackDto {
+  @IsNumber()
+  @ApiProperty({
+    description: 'User id',
+    type: Number,
+  })
+  public userId: number;
+
+  @IsString()
+  @ApiProperty({
+    description: 'Action feedback',
+    type: String,
+  })
+  public feedback: string;
+}

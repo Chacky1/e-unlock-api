@@ -2,7 +2,12 @@ import { Injectable } from '@nestjs/common';
 import { Action as PrismaAction } from '@prisma/client';
 import { CreateActionDto } from '../../dto/create-action.dto';
 import { ActionRepository } from '../repositories/action.repository';
-import { Action, ActionType, SearchActionQuery } from '../../types/action.type';
+import {
+  Action,
+  ActionType,
+  SearchActionQuery,
+  UserAction,
+} from '../../types/action.type';
 import { StorageService } from '../../../config/cloud/providers/services/storage.service';
 
 const { CLOUD_STORAGE_BUCKET_NAME } = process.env;
@@ -19,13 +24,15 @@ export class ActionService {
   async search(filters: SearchActionQuery): Promise<Action[]> {
     const actions = await this.actionRepository.search(filters);
 
-    return actions.map((action) => this.transformPrismaToInterface(action));
+    return actions.map((action) =>
+      this.transformPrismaActionToInterface(action),
+    );
   }
 
   async create(createActionDto: CreateActionDto): Promise<Action> {
     const createdAction = await this.actionRepository.create(createActionDto);
 
-    return this.transformPrismaToInterface(createdAction);
+    return this.transformPrismaActionToInterface(createdAction);
   }
 
   async complete(
@@ -57,7 +64,15 @@ export class ActionService {
     return true;
   }
 
-  private transformPrismaToInterface(action: PrismaAction): Action {
+  async addFeedback(
+    actionId: number,
+    userId: number,
+    feedback: string,
+  ): Promise<UserAction> {
+    return this.actionRepository.addFeedback(actionId, userId, feedback);
+  }
+
+  private transformPrismaActionToInterface(action: PrismaAction): Action {
     return {
       ...action,
       type: ActionType[action.type],

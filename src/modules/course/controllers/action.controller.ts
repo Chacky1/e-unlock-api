@@ -1,11 +1,22 @@
-import { Controller, Post, Body, UseGuards, Get, Query } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  UseGuards,
+  Get,
+  Query,
+  Param,
+} from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
-import { CreateActionDto } from '../dto/create-action.dto';
+import { ApiCreatedResponse, ApiOkResponse, ApiParam } from '@nestjs/swagger';
+import {
+  CreateActionDto,
+  CreateActionFeedbackDto,
+} from '../dto/create-action.dto';
 import { Scope } from '../../../shared/auth/decorator/scope.decorator';
 import { ScopeGuard } from '../../../shared/auth/providers/guards/scope.guard';
 import { ActionService } from '../providers/services/action.service';
-import { Action, SearchActionQuery } from '../types/action.type';
+import { Action, SearchActionQuery, UserAction } from '../types/action.type';
 
 @Controller('actions')
 export class ActionController {
@@ -30,5 +41,22 @@ export class ActionController {
   })
   async create(@Body() createActionDto: CreateActionDto): Promise<Action> {
     return this.actionService.create(createActionDto);
+  }
+
+  @Post('/:actionId/feedback')
+  @UseGuards(AuthGuard('jwt'), ScopeGuard)
+  @Scope('add:actions.feedback')
+  @ApiParam({
+    name: 'actionId',
+    type: Number,
+  })
+  @ApiCreatedResponse({
+    type: UserAction,
+  })
+  async addFeedback(
+    @Body() body: CreateActionFeedbackDto,
+    @Param('actionId') actionId: number,
+  ): Promise<UserAction> {
+    return this.actionService.addFeedback(actionId, body.userId, body.feedback);
   }
 }

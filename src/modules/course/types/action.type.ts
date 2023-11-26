@@ -51,6 +51,14 @@ export class UserAction {
 
   @IsReadOnly()
   @ApiProperty({
+    description: 'User action feedback',
+    readOnly: true,
+    type: 'string',
+  })
+  feedback: string;
+
+  @IsReadOnly()
+  @ApiProperty({
     description: 'User action creation date',
     readOnly: true,
     type: 'string',

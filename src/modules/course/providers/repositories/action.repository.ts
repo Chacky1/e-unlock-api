@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Action } from '@prisma/client';
+import { Action, UserAction } from '@prisma/client';
 import { DatabaseService } from '../../../config/database/providers/services/database.service';
 import { CreateActionDto } from '../../dto/create-action.dto';
 import { SearchActionQuery } from '../../types/action.type';
@@ -148,5 +148,36 @@ export class ActionRepository {
     });
 
     return;
+  }
+
+  async addFeedback(
+    actionId: number,
+    userId: number,
+    feedback: string,
+  ): Promise<UserAction> {
+    const userAction = await this.databaseService.userAction.findUnique({
+      where: {
+        userId_actionId: {
+          userId,
+          actionId,
+        },
+      },
+    });
+
+    if (!userAction) {
+      throw new ResourceNotFoundError('USER_ACTION', `${userId}-${actionId}`);
+    }
+
+    return this.databaseService.userAction.update({
+      where: {
+        userId_actionId: {
+          userId,
+          actionId,
+        },
+      },
+      data: {
+        feedback,
+      },
+    });
   }
 }
