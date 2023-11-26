@@ -24,6 +24,7 @@ describe('User Controller', () => {
   let existingUserId: number;
   const unknownUserId = 999;
   const unknownLessonId = 999;
+  const unknownActionId = 999;
 
   beforeAll(async () => {
     accessToken = await fetchAccessToken();
@@ -596,6 +597,193 @@ describe('User Controller', () => {
         .set('Authorization', `Bearer ${accessToken}`)
         .send()
         .expect(HttpStatus.BAD_REQUEST);
+    });
+
+    it('should return 400 when called with an unknown action id.', async () => {
+      await request(app.getHttpServer())
+        .post(`/users/${existingUserId}/actions/${unknownActionId}/complete`)
+        .set('Authorization', `Bearer ${accessToken}`)
+        .send()
+        .expect(HttpStatus.BAD_REQUEST);
+    });
+  });
+
+  describe('PATCH /users/:id/actions/:actionId/complete', () => {
+    it('should complete an action when called with an answer on a QUESTION action type.', async () => {
+      const fakeCategory = createFakeCategoryDto();
+
+      const categoryResponse = await request(app.getHttpServer())
+        .post('/categories')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .send(fakeCategory);
+
+      const fakeCourse = createFakeCourseDto({
+        categoryId: categoryResponse.body.id,
+      });
+
+      const courseResponse = await request(app.getHttpServer())
+        .post('/courses')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .send(fakeCourse);
+
+      const fakeSection = createFakeSectionDto({
+        courseId: courseResponse.body.id,
+      });
+
+      const sectionResponse = await request(app.getHttpServer())
+        .post('/sections')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .send(fakeSection);
+
+      const fakeLesson = createFakeLessonDto({
+        sectionId: sectionResponse.body.id,
+      });
+
+      const lessonResponse = await request(app.getHttpServer())
+        .post('/lessons')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .send(fakeLesson);
+
+      const lessonId = lessonResponse.body.id;
+
+      const fakeAction = createFakeActionDto({
+        lessonId,
+        type: ActionType.QUESTION,
+      });
+
+      const actionResponse = await request(app.getHttpServer())
+        .post('/actions')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .send(fakeAction);
+
+      const actionId = actionResponse.body.id;
+
+      const answer = 'answer';
+
+      await request(app.getHttpServer())
+        .patch(`/users/${existingUserId}/actions/${actionId}/complete`)
+        .set('Authorization', `Bearer ${accessToken}`)
+        .send({ answer })
+        .expect(HttpStatus.NO_CONTENT);
+    });
+
+    it('should complete an action when called with a file on a CODE action type.', async () => {
+      const fakeCategory = createFakeCategoryDto();
+
+      const categoryResponse = await request(app.getHttpServer())
+        .post('/categories')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .send(fakeCategory);
+
+      const fakeCourse = createFakeCourseDto({
+        categoryId: categoryResponse.body.id,
+      });
+
+      const courseResponse = await request(app.getHttpServer())
+        .post('/courses')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .send(fakeCourse);
+
+      const fakeSection = createFakeSectionDto({
+        courseId: courseResponse.body.id,
+      });
+
+      const sectionResponse = await request(app.getHttpServer())
+        .post('/sections')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .send(fakeSection);
+
+      const fakeLesson = createFakeLessonDto({
+        sectionId: sectionResponse.body.id,
+      });
+
+      const lessonResponse = await request(app.getHttpServer())
+        .post('/lessons')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .send(fakeLesson);
+
+      const lessonId = lessonResponse.body.id;
+
+      const fakeAction = createFakeActionDto({
+        lessonId,
+        type: ActionType.CODE,
+      });
+
+      const actionResponse = await request(app.getHttpServer())
+        .post('/actions')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .send(fakeAction);
+
+      const actionId = actionResponse.body.id;
+
+      await request(app.getHttpServer())
+        .patch(`/users/${existingUserId}/actions/${actionId}/complete`)
+        .set('Authorization', `Bearer ${accessToken}`)
+        .attach('file', `${process.cwd()}/tests/e2e/assets/test.zip`)
+        .expect(HttpStatus.NO_CONTENT);
+    });
+
+    it('should return 404 when called with an unknown user id.', async () => {
+      const fakeCategory = createFakeCategoryDto();
+
+      const categoryResponse = await request(app.getHttpServer())
+        .post('/categories')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .send(fakeCategory);
+
+      const fakeCourse = createFakeCourseDto({
+        categoryId: categoryResponse.body.id,
+      });
+
+      const courseResponse = await request(app.getHttpServer())
+        .post('/courses')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .send(fakeCourse);
+
+      const fakeSection = createFakeSectionDto({
+        courseId: courseResponse.body.id,
+      });
+
+      const sectionResponse = await request(app.getHttpServer())
+        .post('/sections')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .send(fakeSection);
+
+      const fakeLesson = createFakeLessonDto({
+        sectionId: sectionResponse.body.id,
+      });
+
+      const lessonResponse = await request(app.getHttpServer())
+        .post('/lessons')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .send(fakeLesson);
+
+      const lessonId = lessonResponse.body.id;
+
+      const fakeAction = createFakeActionDto({
+        lessonId,
+      });
+
+      const actionResponse = await request(app.getHttpServer())
+        .post('/actions')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .send(fakeAction);
+
+      const actionId = actionResponse.body.id;
+
+      await request(app.getHttpServer())
+        .patch(`/users/${unknownUserId}/actions/${actionId}/complete`)
+        .set('Authorization', `Bearer ${accessToken}`)
+        .send()
+        .expect(HttpStatus.NOT_FOUND);
+    });
+
+    it('should return 404 when called with an unknown action id.', async () => {
+      await request(app.getHttpServer())
+        .patch(`/users/${existingUserId}/actions/${unknownActionId}/complete`)
+        .set('Authorization', `Bearer ${accessToken}`)
+        .send()
+        .expect(HttpStatus.NOT_FOUND);
     });
   });
 });
