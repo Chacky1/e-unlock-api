@@ -11,6 +11,7 @@ describe('ActionService', () => {
   const actionRepositoryMock = {
     create: jest.fn(),
     complete: jest.fn(),
+    uncomplete: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -70,6 +71,17 @@ describe('ActionService', () => {
         actionId,
         answer,
       );
+    });
+  });
+
+  describe('uncomplete', () => {
+    it('should uncomplete an action when called.', async () => {
+      const userId = 1;
+      const actionId = 1;
+
+      await service.uncomplete(userId, actionId);
+
+      expect(repository.uncomplete).toHaveBeenCalledWith(userId, actionId);
     });
   });
 });
