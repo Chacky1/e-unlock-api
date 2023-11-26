@@ -786,4 +786,129 @@ describe('User Controller', () => {
         .expect(HttpStatus.NOT_FOUND);
     });
   });
+
+  describe('PATCH /users/:id/actions/:actionId/uncomplete', () => {
+    it('should uncomplete an action when called on a completed action.', async () => {
+      const fakeCategory = createFakeCategoryDto();
+
+      const categoryResponse = await request(app.getHttpServer())
+        .post('/categories')
+        .send(fakeCategory)
+        .set('Authorization', `Bearer ${accessToken}`);
+
+      const fakeCourse = createFakeCourseDto({
+        categoryId: categoryResponse.body.id,
+      });
+
+      const courseResponse = await request(app.getHttpServer())
+        .post('/courses')
+        .send(fakeCourse)
+        .set('Authorization', `Bearer ${accessToken}`);
+
+      const fakeSection = createFakeSectionDto({
+        courseId: courseResponse.body.id,
+      });
+
+      const sectionResponse = await request(app.getHttpServer())
+        .post('/sections')
+        .send(fakeSection)
+        .set('Authorization', `Bearer ${accessToken}`);
+
+      const fakeLesson = createFakeLessonDto({
+        sectionId: sectionResponse.body.id,
+      });
+
+      const lessonResponse = await request(app.getHttpServer())
+        .post('/lessons')
+        .send(fakeLesson)
+        .set('Authorization', `Bearer ${accessToken}`);
+
+      const lessonId = lessonResponse.body.id;
+
+      const fakeAction = createFakeActionDto({
+        lessonId,
+      });
+
+      const actionResponse = await request(app.getHttpServer())
+        .post('/actions')
+        .send(fakeAction)
+        .set('Authorization', `Bearer ${accessToken}`);
+
+      const actionId = actionResponse.body.id;
+
+      await request(app.getHttpServer())
+        .patch(`/users/${existingUserId}/actions/${actionId}/complete`)
+        .send()
+        .set('Authorization', `Bearer ${accessToken}`);
+
+      await request(app.getHttpServer())
+        .patch(`/users/${existingUserId}/actions/${actionId}/uncomplete`)
+        .send()
+        .set('Authorization', `Bearer ${accessToken}`)
+        .expect(HttpStatus.NO_CONTENT);
+    });
+
+    it('should return 404 when called with an unknown user id.', async () => {
+      const fakeCategory = createFakeCategoryDto();
+
+      const categoryResponse = await request(app.getHttpServer())
+        .post('/categories')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .send(fakeCategory);
+
+      const fakeCourse = createFakeCourseDto({
+        categoryId: categoryResponse.body.id,
+      });
+
+      const courseResponse = await request(app.getHttpServer())
+        .post('/courses')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .send(fakeCourse);
+
+      const fakeSection = createFakeSectionDto({
+        courseId: courseResponse.body.id,
+      });
+
+      const sectionResponse = await request(app.getHttpServer())
+        .post('/sections')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .send(fakeSection);
+
+      const fakeLesson = createFakeLessonDto({
+        sectionId: sectionResponse.body.id,
+      });
+
+      const lessonResponse = await request(app.getHttpServer())
+        .post('/lessons')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .send(fakeLesson);
+
+      const lessonId = lessonResponse.body.id;
+
+      const fakeAction = createFakeActionDto({
+        lessonId,
+      });
+
+      const actionResponse = await request(app.getHttpServer())
+        .post('/actions')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .send(fakeAction);
+
+      const actionId = actionResponse.body.id;
+
+      await request(app.getHttpServer())
+        .patch(`/users/${unknownUserId}/actions/${actionId}/uncomplete`)
+        .send()
+        .set('Authorization', `Bearer ${accessToken}`)
+        .expect(HttpStatus.NOT_FOUND);
+    });
+
+    it('should return 404 when called with an unknown action id.', async () => {
+      await request(app.getHttpServer())
+        .patch(`/users/${existingUserId}/actions/${unknownActionId}/uncomplete`)
+        .set('Authorization', `Bearer ${accessToken}`)
+        .send()
+        .expect(HttpStatus.NOT_FOUND);
+    });
+  });
 });
