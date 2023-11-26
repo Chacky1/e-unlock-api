@@ -171,4 +171,20 @@ export class UserController {
 
     return;
   }
+
+  @Patch(':userId/actions/:actionId/uncomplete')
+  @UseGuards(AuthGuard('jwt'), ScopeGuard)
+  @Scope('update:users.actions')
+  @ApiNoContentResponse()
+  @ApiParam({ name: 'userId', type: String })
+  @ApiParam({ name: 'actionId', type: Number })
+  @HttpCode(204)
+  public async uncompleteAction(
+    @Param('userId') userId: number,
+    @Param('actionId') actionId: number,
+  ) {
+    await this.userService.uncompleteAction(+userId, +actionId);
+
+    return;
+  }
 }

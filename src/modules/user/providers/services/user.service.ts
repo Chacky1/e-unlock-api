@@ -73,4 +73,8 @@ export class UserService {
   ) {
     return await this.actionService.complete(userId, actionId, answer, file);
   }
+
+  public async uncompleteAction(userId: number, actionId: number) {
+    return await this.actionService.uncomplete(userId, actionId);
+  }
 }

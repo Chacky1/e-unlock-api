@@ -51,6 +51,12 @@ export class ActionService {
     return true;
   }
 
+  async uncomplete(userId: number, actionId: number): Promise<boolean> {
+    await this.actionRepository.uncomplete(userId, actionId);
+
+    return true;
+  }
+
   private transformPrismaToInterface(action: PrismaAction): Action {
     return {
       ...action,

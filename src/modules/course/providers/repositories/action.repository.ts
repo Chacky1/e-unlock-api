@@ -100,4 +100,53 @@ export class ActionRepository {
 
     return;
   }
+
+  async uncomplete(userId: number, actionId: number): Promise<boolean> {
+    const action = await this.databaseService.action.findUnique({
+      where: {
+        id: actionId,
+      },
+    });
+
+    if (!action) {
+      throw new ResourceNotFoundError('ACTION', `${actionId}`);
+    }
+
+    const user = await this.databaseService.user.findUnique({
+      where: {
+        id: userId,
+      },
+    });
+
+    if (!user) {
+      throw new ResourceNotFoundError('USER', `${userId}`);
+    }
+
+    const userActions = await this.databaseService.userAction.findUnique({
+      where: {
+        userId_actionId: {
+          userId,
+          actionId,
+        },
+      },
+    });
+
+    if (!userActions) {
+      throw new ResourceNotFoundError('USER_ACTION', `${userId}-${actionId}`);
+    }
+
+    await this.databaseService.userAction.update({
+      where: {
+        userId_actionId: {
+          userId,
+          actionId,
+        },
+      },
+      data: {
+        isCompleted: false,
+      },
+    });
+
+    return;
+  }
 }
