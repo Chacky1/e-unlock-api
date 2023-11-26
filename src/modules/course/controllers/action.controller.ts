@@ -57,6 +57,10 @@ export class ActionController {
     @Body() body: CreateActionFeedbackDto,
     @Param('actionId') actionId: number,
   ): Promise<UserAction> {
-    return this.actionService.addFeedback(actionId, body.userId, body.feedback);
+    return this.actionService.addFeedback(
+      +actionId,
+      body.userId,
+      body.feedback,
+    );
   }
 }
