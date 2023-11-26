@@ -15,7 +15,7 @@ export class OrderRepository {
         code: createOrderDto.userCode,
       },
       include: {
-        courses: true,
+        userCourses: true,
       },
     });
 
@@ -24,7 +24,7 @@ export class OrderRepository {
     }
 
     if (
-      user.courses.find(
+      user.userCourses.find(
         (course) => +course.courseId === +createOrderDto.courseId,
       )
     ) {

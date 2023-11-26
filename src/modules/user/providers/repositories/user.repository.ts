@@ -20,7 +20,7 @@ export class UserRepository {
 
   public async findOneWithCode(code: string): Promise<
     User & {
-      courses: UserCourse[];
+      userCourses: UserCourse[];
     }
   > {
     const user = await this.databaseService.user.findUnique({
@@ -28,7 +28,7 @@ export class UserRepository {
         code,
       },
       include: {
-        courses: true,
+        userCourses: true,
       },
     });
 

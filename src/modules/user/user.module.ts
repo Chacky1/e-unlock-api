@@ -9,6 +9,8 @@ import { CloudModule } from '../config/cloud/cloud.module';
 import { UserWebhookController } from './controllers/webhook.controller';
 import { LessonService } from '../course/providers/services/lesson.service';
 import { LessonRepository } from '../course/providers/repositories/lesson.repository';
+import { ActionService } from '../course/providers/services/action.service';
+import { ActionRepository } from '../course/providers/repositories/action.repository';
 
 @Module({
   imports: [DatabaseModule, CloudModule],
@@ -20,6 +22,8 @@ import { LessonRepository } from '../course/providers/repositories/lesson.reposi
     CourseRepository,
     LessonService,
     LessonRepository,
+    ActionService,
+    ActionRepository,
   ],
 })
 export class UserModule {}

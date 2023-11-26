@@ -18,6 +18,9 @@ import { CategoryRepository } from './providers/repositories/category.repository
 import { ResourceController } from './controllers/resource.controller';
 import { ResourceService } from './providers/services/resource.service';
 import { ResourceRepository } from './providers/repositories/resource.repository';
+import { ActionController } from './controllers/action.controller';
+import { ActionService } from './providers/services/action.service';
+import { ActionRepository } from './providers/repositories/action.repository';
 
 @Module({
   imports: [DatabaseModule, CloudModule],
@@ -27,6 +30,7 @@ import { ResourceRepository } from './providers/repositories/resource.repository
     LessonController,
     CategoryController,
     ResourceController,
+    ActionController,
   ],
   providers: [
     CourseRepository,
@@ -34,16 +38,18 @@ import { ResourceRepository } from './providers/repositories/resource.repository
     LessonRepository,
     CategoryRepository,
     ResourceRepository,
+    ActionRepository,
     CourseService,
     SectionService,
     LessonService,
     CategoryService,
     ResourceService,
+    ActionService,
     {
       provide: APP_INTERCEPTOR,
       useClass: ErrorsInterceptor,
     },
   ],
-  exports: [LessonService],
+  exports: [LessonService, ActionService],
 })
 export class CourseModule {}

@@ -5,21 +5,31 @@ import {
   HttpCode,
   NotFoundException,
   Param,
+  Patch,
   Post,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
-import { UserService } from '../providers/services/user.service';
-import { CreateUserDto } from '../dto/create-user.dto';
-import { User, UserLesson } from '../types/user.type';
+import { tmpdir } from 'os';
 import { AuthGuard } from '@nestjs/passport';
 import {
   ApiParam,
   ApiOkResponse,
   ApiCreatedResponse,
   ApiNoContentResponse,
+  ApiConsumes,
 } from '@nestjs/swagger';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { UserService } from '../providers/services/user.service';
+import { CreateUserDto } from '../dto/create-user.dto';
+import { User, UserLesson } from '../types/user.type';
 import { ScopeGuard } from '../../../shared/auth/providers/guards/scope.guard';
 import { Scope } from '../../../shared/auth/decorator/scope.decorator';
+import { ErrorsInterceptor } from '../../../shared/interceptors/errors.interceptor';
+import { CompleteActionDto } from '../dto/complete-action.dto';
+
+const UPLOAD_FILE_PATH = `${tmpdir()}/actions/uploads`;
 
 @Controller('users')
 export class UserController {
@@ -106,5 +116,75 @@ export class UserController {
     @Param('lessonId') lessonId: number,
   ) {
     await this.userService.invalidateLesson(+userId, +lessonId);
+  }
+
+  @Post(':userId/actions/:actionId/complete')
+  @UseInterceptors(
+    ErrorsInterceptor,
+    FileInterceptor('file', { dest: UPLOAD_FILE_PATH }),
+  )
+  @UseGuards(AuthGuard('jwt'), ScopeGuard)
+  @Scope('add:users.actions')
+  @ApiNoContentResponse()
+  @ApiParam({ name: 'userId', type: String })
+  @ApiParam({ name: 'actionId', type: Number })
+  @HttpCode(204)
+  @ApiConsumes('multipart/form-data')
+  public async completeAction(
+    @Param('userId') userId: number,
+    @Param('actionId') actionId: number,
+    @Body() body: CompleteActionDto,
+    @UploadedFile() file?: Express.Multer.File,
+  ) {
+    if (file) {
+      await this.userService.completeAction(+userId, +actionId, null, file);
+
+      return;
+    }
+
+    await this.userService.completeAction(+userId, +actionId, body.answer);
+
+    return;
+  }
+
+  @Patch(':userId/actions/:actionId/complete')
+  @UseGuards(AuthGuard('jwt'), ScopeGuard)
+  @Scope('update:users.actions')
+  @ApiNoContentResponse()
+  @ApiParam({ name: 'userId', type: String })
+  @ApiParam({ name: 'actionId', type: Number })
+  @HttpCode(204)
+  @ApiConsumes('multipart/form-data')
+  public async updateAction(
+    @Param('userId') userId: number,
+    @Param('actionId') actionId: number,
+    @Body() body: CompleteActionDto,
+    @UploadedFile() file?: Express.Multer.File,
+  ) {
+    if (file) {
+      await this.userService.completeAction(+userId, +actionId, null, file);
+
+      return;
+    }
+
+    await this.userService.completeAction(+userId, +actionId, body.answer);
+
+    return;
+  }
+
+  @Patch(':userId/actions/:actionId/uncomplete')
+  @UseGuards(AuthGuard('jwt'), ScopeGuard)
+  @Scope('update:users.actions')
+  @ApiNoContentResponse()
+  @ApiParam({ name: 'userId', type: String })
+  @ApiParam({ name: 'actionId', type: Number })
+  @HttpCode(204)
+  public async uncompleteAction(
+    @Param('userId') userId: number,
+    @Param('actionId') actionId: number,
+  ) {
+    await this.userService.uncompleteAction(+userId, +actionId);
+
+    return;
   }
 }
