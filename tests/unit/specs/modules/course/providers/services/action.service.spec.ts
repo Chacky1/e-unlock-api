@@ -12,6 +12,7 @@ describe('ActionService', () => {
     create: jest.fn(),
     complete: jest.fn(),
     uncomplete: jest.fn(),
+    addFeedback: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -82,6 +83,24 @@ describe('ActionService', () => {
       await service.uncomplete(userId, actionId);
 
       expect(repository.uncomplete).toHaveBeenCalledWith(userId, actionId);
+    });
+  });
+
+  describe('addFeedback', () => {
+    it('should add feedback to an action when called.', async () => {
+      const actionId = 1;
+      const userId = 1;
+      const feedback = 'feedback';
+
+      repository.addFeedback = jest.fn().mockResolvedValue({});
+
+      await service.addFeedback(actionId, userId, feedback);
+
+      expect(repository.addFeedback).toHaveBeenCalledWith(
+        actionId,
+        userId,
+        feedback,
+      );
     });
   });
 });
